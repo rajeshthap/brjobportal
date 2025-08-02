@@ -361,20 +361,29 @@ a.nav-brnd.navbar-brand {
 .my-profile {
   margin-top: 96px !important;
 }
-.nav-list{
+
+.nav-list {
   margin-right: 55px !important;
 }
+
 .suggestions-box.text-start.bg-white.border.rounded.shadow-sm.position-absolute.w-100 {
   max-width: 276px !important;
 }
+
+.save-details {
+  margin-top: 96px !important;
+}
+
 @media only screen and (max-width: 568px) {
   .awc-btn-bill {
     text-align: center !important;
     margin-bottom: var(--awc-space-300);
   }
-.nav-list{
-  margin-right: 0px !important;
-}
+
+  .nav-list {
+    margin-right: 0px !important;
+  }
+
   .search-bar {
     border-radius: var(--awc-space-300);
   }

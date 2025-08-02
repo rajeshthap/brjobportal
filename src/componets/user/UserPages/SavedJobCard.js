@@ -24,18 +24,16 @@ const SavedJobCard = ({ job, onDelete }) => {
   //     alert("Please login to apply for jobs.");
   //     navigate("/UserLogin");
   //   } else {
-     
+
   //     localStorage.setItem("selected_job_id", job.job_id);
   //     navigate("/JobDetails", { state: { job } });
   //   }
   // };
 
   return (
-    <Card className="my-3 p-3 shadow-sm border-0 saved-job-card">
+
+    <Card className=" p-3 ">
       <Row className="align-items-center saved-job-row">
-        <Col xs={1}>
-          <Form.Check />
-        </Col>
         <Col>
           <h5 className="mb-1">{job.job_title}</h5>
           <p className="text-muted mb-1">{job.company_name}</p>
@@ -55,16 +53,16 @@ const SavedJobCard = ({ job, onDelete }) => {
           <div className="d-flex justify-content-between align-items-center">
             <small className="text-muted">Posted {new Date(job.date).toLocaleDateString()}</small>
             <div className="d-flex align-items-center gap-3">
-               <Button
+              <Button
                 variant="outline-secondary"
                 onClick={() => navigate(-1)}
-                style={{ marginRight: "14px",fontSize:"12px" }}
+                style={{ marginRight: "14px", fontSize: "12px" }}
               >
                 <FaArrowLeft className="me-1" />
                 Back
               </Button>
               <span className="text-primary d-flex align-items-center gap-1">
-                 Saved <FaBookmark />
+                Saved <FaBookmark />
               </span>
               <Button variant="outline-danger" size="sm" onClick={handleDeleteClick}>
                 <FaTrash /> Delete
