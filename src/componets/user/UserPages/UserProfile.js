@@ -39,16 +39,14 @@ const UserProfile = () => {
         console.log("da", resumeData);
         let resumeUrl = resumeData.generated_pdf;
         if (resumeUrl && !resumeUrl.startsWith("http")) {
-          resumeUrl = `${BASE_URLL}${
-            resumeUrl.startsWith("/") ? "" : "/"
-          }${resumeUrl}`;
+          resumeUrl = `${BASE_URLL}${resumeUrl.startsWith("/") ? "" : "/"
+            }${resumeUrl}`;
         }
 
         let photoURL = userBasic.photo;
         if (photoURL && !photoURL.startsWith("http")) {
-          photoURL = `${BASE_URLL}${
-            photoURL.startsWith("/") ? "" : "/"
-          }${photoURL}`;
+          photoURL = `${BASE_URLL}${photoURL.startsWith("/") ? "" : "/"
+            }${photoURL}`;
         }
 
         const mergedData = {
@@ -75,9 +73,8 @@ const UserProfile = () => {
   const handleUpdate = (updatedUser) => {
     let updatedPhoto = updatedUser.photo;
     if (updatedPhoto && !updatedPhoto.startsWith("http")) {
-      updatedPhoto = `${BASE_URLL}${
-        updatedPhoto.startsWith("/") ? "" : "/"
-      }${updatedPhoto}`;
+      updatedPhoto = `${BASE_URLL}${updatedPhoto.startsWith("/") ? "" : "/"
+        }${updatedPhoto}`;
     }
 
     setUserData((prev) => ({
@@ -165,27 +162,16 @@ const UserProfile = () => {
   return (
     <Container>
       <Card className="p-4 shadow-lg rounded-4 mt-5 mb-5 my-profile">
-        <div className="d-flex justify-content-around align-items-center mb-4">
-          <Button variant="secondary" onClick={() => navigate(-1)}>
-            ← Back
-          </Button>
-          <h3 className="fw-bold">My Profile</h3>
+        <Row className="mb-4">
+          <Row>
+            <Col><Button variant="secondary" onClick={() => navigate(-1)}>
+              ← Back
+            </Button></Col>
+            <Col> <h3 className="fw-bold">My Profile</h3></Col>
 
-          <Button
-            className="rounded-pill px-4"
-            variant="primary"
-            onClick={() => setShowEdit(true)}
-          >
-            Edit Profile
-          </Button>
-          <Button
-            className="rounded-pill px-4 mt-2"
-            variant="outline-secondary"
-            onClick={() => navigate("/ViewProfile")}
-          >
-            Edit Resume
-          </Button>
-        </div>
+          </Row>
+        </Row>
+
 
         <Row>
           <Col md={4} className="text-center mb-4">
@@ -236,6 +222,25 @@ const UserProfile = () => {
           </Col>
 
           <Col md={8}>
+            <div className="d-flex justify-content-end align-items-center mb-4">
+
+
+
+              <Button
+                className="rounded-pill px-4 me-2"
+                variant="primary"
+                onClick={() => setShowEdit(true)}
+              >
+                Edit Profile
+              </Button>
+              <Button
+                className="rounded-pill px-4"
+                variant="outline-secondary"
+                onClick={() => navigate("/ViewProfile")}
+              >
+                Edit Resume
+              </Button>
+            </div>
             <section className="mb-4">
               <h5 className="text-primary border-bottom pb-1 mb-3">
                 Personal Information
