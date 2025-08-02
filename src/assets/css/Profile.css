@@ -1,0 +1,45 @@
+.educat-desin {
+  background-color: var(--brjp-blue-light-bg) !important;
+  color: var(--brjp-black);
+  padding: var(--brjp-space-100) var(--brjp-space-600) var(--brjp-space-100) var(--brjp-space-600);
+}
+
+.jp-feilds-design {
+  background-color: var(--brjp-blue-light-bg) !important;
+  color: var(--brjp-black);
+  padding: var(--brjp-space-100) var(--brjp-space-600) var(--brjp-space-100) var(--brjp-space-600);
+}
+
+.register-resume {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-resume h3 {
+  color: var(--brjp-black) !important;
+  font-size: var(--brjp-space-550);
+  font-weight: 600;
+}
+.educat-desin h5{
+  font-size: var(--brjp-space-300) !important;
+  font-weight: 600;
+}
+.education-add{
+  font-size: var(--brjp-space-300);
+}
+.form-check-input[type=radio] {
+  border: 1px solid rgba(15, 11, 11, 0.527) !important;
+}
+.Qualification-option{
+  font-size: var(--brjp-space-300);
+
+}
+.form-check-label{
+  font-size: var(--brjp-space-300);
+}
+.css-hlgwow{
+  font-size: var(--brjp-space-300) !important;
+
+}
+.css-b62m3t-container{
+  font-size: var(--brjp-space-300) !important;
+}
