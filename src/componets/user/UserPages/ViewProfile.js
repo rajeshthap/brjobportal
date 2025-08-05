@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
-
+import { MdUpdate } from "react-icons/md";
+import { MdOutlineCancel } from "react-icons/md";
 const qualificationOptions = ["10th", "12th", "Diploma", "Graduation", "Post Graduation", "PhD"];
 const boardOptions = [
   "CBSE",
@@ -115,7 +116,7 @@ const ViewProfile = () => {
             Authorization: `Bearer ${accessToken11}`,
           },
         });
-         console.log(" API Response:", res.data);
+        console.log(" API Response:", res.data);
         const data = res.data;
         setFormData({
           full_name: data.full_name || "",
@@ -135,20 +136,20 @@ const ViewProfile = () => {
           objetive: data.objetive || "",
           Proffesional_experience: data.Proffesional_experience || "",
         });
-if (data.languages) {
-  let langs = [];
-  try {
-    langs = JSON.parse(data.languages); // Parse JSON string to array
-  } catch (e) {
-    langs = data.languages.split(",").map((l) => l.trim()); // fallback
-  }
+        if (data.languages) {
+          let langs = [];
+          try {
+            langs = JSON.parse(data.languages); // Parse JSON string to array
+          } catch (e) {
+            langs = data.languages.split(",").map((l) => l.trim()); // fallback
+          }
 
-  const selected = langs
-    .map((l) => languageOptions.find((opt) => opt.value === l))
-    .filter(Boolean);
+          const selected = langs
+            .map((l) => languageOptions.find((opt) => opt.value === l))
+            .filter(Boolean);
 
-  setSelectedLanguages(selected);
-}
+          setSelectedLanguages(selected);
+        }
 
 
         if (data.Distance_learning) {
@@ -170,7 +171,7 @@ if (data.languages) {
           data.Graduation_Details || {},
           data.Masters_Details || {},
         ]);
-        
+
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -205,13 +206,13 @@ if (data.languages) {
     if (photo) payload.append("photo", photo);
     if (resume instanceof File) payload.append("resume", resume);
     try {
-   const res=   await axios.post(`${BASE_URLL}api2/custom-resume/`, payload, {
+      const res = await axios.post(`${BASE_URLL}api2/custom-resume/`, payload, {
         headers: {
           Authorization: `Bearer ${accessToken11}`,
           "Content-Type": "multipart/form-data",
         },
       });
-    
+
       alert("Resume updated successfully!");
       navigate("/UserProfile");
     } catch (err) {
@@ -223,9 +224,9 @@ if (data.languages) {
   const degreeLabels = ["10th", "12th", "Diploma", "Graduation", "Masters"];
 
   return (
-    <Container className="mt-5 mb-5">
+    <Container className="mt-5 mb-5 edit-main">
       <Card className="p-4 shadow rounded-4">
-        <h3 className="text-center mb-4 text-primary">Edit Profile</h3>
+        <h3 className="text-center mb-4">Edit Profile</h3>
         <form onSubmit={handleSubmit}>
           <Row>
             <Col md={6}>
@@ -366,8 +367,8 @@ if (data.languages) {
           </div>
 
           <div className="text-center d-flex justify-content-center gap-3">
-            <Button type="submit" variant="success" className="px-4 rounded-pill">Update Resume</Button>
-            <Button type="button" variant="secondary" className="px-4 rounded-pill" onClick={() => navigate("/UserProfile")}>Cancel</Button>
+            <Button type="submit" variant="" className="px-4 edit-r-btn"><MdUpdate /> Update Resume</Button>
+            <Button type="button" variant="" className="px-4 close-btn-btn" onClick={() => navigate("/UserProfile")}><MdOutlineCancel /> Cancel</Button>
           </div>
         </form>
       </Card>

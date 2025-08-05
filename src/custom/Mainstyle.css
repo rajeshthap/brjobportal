@@ -461,6 +461,25 @@ a.nav-brnd.navbar-brand {
   padding-right: var(--awc-space-150);
 }
 
+.edit-main {
+  margin-top: 96px !important;
+}
+
+.close-btn-btn {
+  background-color: #8a8a8a;
+  padding: var(--awc-space-200) var(--awc-space-200);
+  font-size: var(--awc-space-300);
+  color: #fff !important;
+  border-radius: var(--awc-space-200) !important;
+  border: none;
+}
+
+.close-btn-btn:hover {
+  background-color: #666666;
+
+}
+
+
 @media only screen and (max-width: 568px) {
   .awc-btn-bill {
     text-align: center !important;
