@@ -90,6 +90,23 @@ const PostJobCard = ({ jobs }) => {
     const daysAgo = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     return daysAgo === 0 ? "Posted today" : `${daysAgo} Days Ago`;
   };
+  const handleApplyJob=(job)=>{
+   const jobId = job.job_id || job.Job_id;
+  const employeeId = job.employee_id || job.Employee_id;
+
+  // Save IDs to localStorage
+  localStorage.setItem("selected_job_id", jobId);
+  localStorage.setItem("selected_employee_id", employeeId);
+  
+  // Navigate to job details page
+  navigate("/JobDetails", {
+    state: {
+      job,
+      job_id: jobId,
+      employee_id: employeeId,
+    },
+  });
+  };
 
  const handleReadMore = (job) => {
   const jobId = job.job_id || job.Job_id;
@@ -107,6 +124,7 @@ const PostJobCard = ({ jobs }) => {
     },
   });
 };
+
 
    
   const handleSaveJob = async (job) => {
@@ -311,6 +329,15 @@ const PostJobCard = ({ jobs }) => {
                     >
                       Read More
                     </Button>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="rounded-pill"
+                      onClick={() => handleApplyJob(job)}
+                    >
+                      Apply
+                    </Button>
+    
                   </div>
                 </div>
               </Card>

@@ -18,17 +18,19 @@ const SavedJobCard = ({ job, onDelete }) => {
   //   navigate("/JobDetails", { state: { job } });
   // };
 
-  // const handleApplyNow = () => {
-  //   const userId = localStorage.getItem("user_id");
-  //   if (!userId) {
-  //     alert("Please login to apply for jobs.");
-  //     navigate("/UserLogin");
-  //   } else {
+   
 
-  //     localStorage.setItem("selected_job_id", job.job_id);
-  //     navigate("/JobDetails", { state: { job } });
-  //   }
-  // };
+  const handleApplyNow = () => {
+     const userId = localStorage.getItem("user_id");
+     if (!userId) {
+       alert("Please login to apply for jobs.");
+       navigate("/UserLogin");
+     } else {
+
+     localStorage.setItem("selected_job_id", job.job_id);
+       navigate("/JobDetails", { state: { job } });
+     }
+   };
 
   return (
 
@@ -67,9 +69,10 @@ const SavedJobCard = ({ job, onDelete }) => {
               <Button variant="outline-danger" size="sm" onClick={handleDeleteClick}>
                 <FaTrash /> Delete
               </Button>
-              {/* <Button variant="outline-primary" size="sm" onClick={handleApplyNow}>
-                <FaCheckCircle /> Apply Now
+              <Button variant="outline-danger" size="sm" onClick={handleApplyNow}>
+                <FaTrash /> Apply Now
               </Button>
+              {/* 
               <Button variant="outline-primary" size="sm" onClick={handleReadMore}>
                 Read More
               </Button> */}

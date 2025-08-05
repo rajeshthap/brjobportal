@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Image, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import JobLogo from "../../../assets/images/job-logo.png";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 
+
+
 function NavBar() {
   const [expanded, setExpanded] = useState(false);
   const [userName, setUserName] = useState("");
+  const[photoUser,setPhotoUser]=useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -24,12 +27,21 @@ function NavBar() {
           const response = await axios.get(
             `${BASE_URLL}api/Registerduser/${userId}/`
           );
-          const name = response.data.name;
+          //console.log("photoUser",response.data.photoUser);
+
+          const {name,picture} = response.data;
+
           const capitalizedName = name
             .split(" ")
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
             .join(" ");
+
+            const fullphotoURL= picture?.startswith("http")? picture
+            : `${BASE_URLL}${picture}`;
+
           setUserName(capitalizedName);
+          setPhotoUser(fullphotoURL);
+          
         } catch (error) {
           console.error("Failed to fetch user name:", error);
         }
@@ -244,9 +256,20 @@ function NavBar() {
               {isLoggedIn && (
                 <>
                   <NavDropdown
-                    title={userName || "UserProfile"}
-                    id="user-profile-dropdown"
-                  >
+                    title={
+                      <span className="align-items-center">
+                        <img src={photoUser || "/default-profile.png"}
+                        alt="User"
+                        width="30"
+                        height="30"
+                        className="rounded-circle me-2"/>
+                        {userName || "UserProfile"}
+                    
+                      </span>
+                    }
+                      id="user-profile-dropdown"
+                      
+                    >
                     <NavDropdown.Item
                       as={Link}
                       to="/SavedJobsList"
@@ -263,7 +286,7 @@ function NavBar() {
                     </NavDropdown.Item>
                     <NavDropdown.Item
                       as={Link}
-                      to="/LeftNav"
+                      to="/UserDashboard"
                       onClick={handleNavClick}
                     >
                       JobPortal
