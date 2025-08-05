@@ -16,12 +16,12 @@ import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 const TrainingRegistration = () => {
   const location = useLocation();
   const stateData = location.state || {};
-   console.log("statedata",stateData )
+  console.log("statedata", stateData)
   const [formData, setFormData] = useState({
     training_name: "",
     training_description: "",
-    training_date: "",         
-    training_duration: "",     
+    training_date: "",
+    training_duration: "",
     candidate_name: "",
     candidate_email: "",
     candidate_phone: "",
@@ -33,17 +33,17 @@ const TrainingRegistration = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-  const stateData = location.state || {}; // move inside
-  const today = new Date().toISOString().slice(0, 10);
+    const stateData = location.state || {}; // move inside
+    const today = new Date().toISOString().slice(0, 10);
 
-  setFormData((prev) => ({
-    ...prev,
-    training_date: today,
-    training_duration: "6 months",
-    training_name: stateData.training_name || "",
-    training_description: stateData.training_description || "",
-  }));
-}, [location.state]); 
+    setFormData((prev) => ({
+      ...prev,
+      training_date: today,
+      training_duration: "6 months",
+      training_name: stateData.training_name || "",
+      training_description: stateData.training_description || "",
+    }));
+  }, [location.state]);
 
 
   const handleChange = (e) => {
@@ -107,7 +107,7 @@ const TrainingRegistration = () => {
   };
 
   return (
-    <Container className="py-5">
+    <Container className=" edit-main">
       <Row className="justify-content-center">
         <Col md={8}>
           <Card className="p-4 shadow-lg">
