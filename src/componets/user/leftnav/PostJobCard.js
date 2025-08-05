@@ -90,43 +90,43 @@ const PostJobCard = ({ jobs }) => {
     const daysAgo = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     return daysAgo === 0 ? "Posted today" : `${daysAgo} Days Ago`;
   };
-  const handleApplyJob=(job)=>{
-   const jobId = job.job_id || job.Job_id;
-  const employeeId = job.employee_id || job.Employee_id;
+  const handleApplyJob = (job) => {
+    const jobId = job.job_id || job.Job_id;
+    const employeeId = job.employee_id || job.Employee_id;
 
-  // Save IDs to localStorage
-  localStorage.setItem("selected_job_id", jobId);
-  localStorage.setItem("selected_employee_id", employeeId);
-  
-  // Navigate to job details page
-  navigate("/JobDetails", {
-    state: {
-      job,
-      job_id: jobId,
-      employee_id: employeeId,
-    },
-  });
+    // Save IDs to localStorage
+    localStorage.setItem("selected_job_id", jobId);
+    localStorage.setItem("selected_employee_id", employeeId);
+
+    // Navigate to job details page
+    navigate("/JobDetails", {
+      state: {
+        job,
+        job_id: jobId,
+        employee_id: employeeId,
+      },
+    });
   };
 
- const handleReadMore = (job) => {
-  const jobId = job.job_id || job.Job_id;
-  const employeeId = job.employee_id || job.Employee_id;
+  const handleReadMore = (job) => {
+    const jobId = job.job_id || job.Job_id;
+    const employeeId = job.employee_id || job.Employee_id;
 
-  // Save IDs to localStorage
-  localStorage.setItem("selected_job_id", jobId);
-  localStorage.setItem("selected_employee_id", employeeId);
-  // Navigate to job details page
-  navigate("/JobDetails", {
-    state: {
-      job,
-      job_id: jobId,
-      employee_id: employeeId,
-    },
-  });
-};
+    // Save IDs to localStorage
+    localStorage.setItem("selected_job_id", jobId);
+    localStorage.setItem("selected_employee_id", employeeId);
+    // Navigate to job details page
+    navigate("/JobDetails", {
+      state: {
+        job,
+        job_id: jobId,
+        employee_id: employeeId,
+      },
+    });
+  };
 
 
-   
+
   const handleSaveJob = async (job) => {
     const userId = localStorage.getItem("user_id");
 
@@ -150,9 +150,8 @@ const PostJobCard = ({ jobs }) => {
       key_skills: "dummy skill",
       comment: "Saved by user",
       location: job.location || "Not specified",
-      experience: `${job.Min_work_experience || 0} - ${
-        job.Max_work_experience || 0
-      }`,
+      experience: `${job.Min_work_experience || 0} - ${job.Max_work_experience || 0
+        }`,
       salary: `${job.Min_salary || 0} - ${job.Max_salary || "Not disclosed"}`,
       work_mode: job.work_mode || "Not specified",
       education: job.education || "Not specified",
@@ -255,16 +254,16 @@ const PostJobCard = ({ jobs }) => {
                   <div>
                     <div
                       className="  text-black d-flex justify-content-center align-items-center"
-                     
+
                     >
-                   <strong>
-  {job.company_name
-    ? `${job.company_name} (${job.company_name
-        .split(" ")
-        .map((w) => w.charAt(0).toUpperCase())
-        .join("")})`
-    : "Company Name (NA)"}
-</strong>
+                      <strong>
+                        {job.company_name
+                          ? `${job.company_name} (${job.company_name
+                            .split(" ")
+                            .map((w) => w.charAt(0).toUpperCase())
+                            .join("")})`
+                          : "Company Name (NA)"}
+                      </strong>
 
                     </div>
                   </div>
@@ -329,15 +328,15 @@ const PostJobCard = ({ jobs }) => {
                     >
                       Read More
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="outline-primary"
                       size="sm"
                       className="rounded-pill"
                       onClick={() => handleApplyJob(job)}
                     >
                       Apply
-                    </Button>
-    
+                    </Button> */}
+
                   </div>
                 </div>
               </Card>

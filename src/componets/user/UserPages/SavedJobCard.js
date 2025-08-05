@@ -1,6 +1,7 @@
 import { Card, Row, Col, Badge, Form, Button } from "react-bootstrap";
 import { FaMapMarkerAlt, FaBookmark, FaTrash, FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { FaUserCheck } from "react-icons/fa";
 
 const SavedJobCard = ({ job, onDelete }) => {
   const navigate = useNavigate();
@@ -18,24 +19,24 @@ const SavedJobCard = ({ job, onDelete }) => {
   //   navigate("/JobDetails", { state: { job } });
   // };
 
-   
+
 
   const handleApplyNow = () => {
-     const userId = localStorage.getItem("user_id");
-     if (!userId) {
-       alert("Please login to apply for jobs.");
-       navigate("/UserLogin");
-     } else {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) {
+      alert("Please login to apply for jobs.");
+      navigate("/UserLogin");
+    } else {
 
-     localStorage.setItem("selected_job_id", job.job_id);
-       navigate("/JobDetails", { state: { job } });
-     }
-   };
+      localStorage.setItem("selected_job_id", job.job_id);
+      navigate("/JobDetails", { state: { job } });
+    }
+  };
 
   return (
 
-    <Card className=" p-3 ">
-      <Row className="align-items-center saved-job-row">
+    <Card className=" p-3  mb-2">
+      <Row className="align-items-center">
         <Col>
           <h5 className="mb-1">{job.job_title}</h5>
           <p className="text-muted mb-1">{job.company_name}</p>
@@ -69,8 +70,8 @@ const SavedJobCard = ({ job, onDelete }) => {
               <Button variant="outline-danger" size="sm" onClick={handleDeleteClick}>
                 <FaTrash /> Delete
               </Button>
-              <Button variant="outline-danger" size="sm" onClick={handleApplyNow}>
-                <FaTrash /> Apply Now
+              <Button variant="outline-success" size="sm" onClick={handleApplyNow}>
+                <FaUserCheck /> Apply Now
               </Button>
               {/* 
               <Button variant="outline-primary" size="sm" onClick={handleReadMore}>
