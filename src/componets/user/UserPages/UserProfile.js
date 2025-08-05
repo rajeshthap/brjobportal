@@ -93,7 +93,7 @@ const UserProfile = () => {
   const renderField = (label, value) => {
     if (!value || value.trim() === "") return null;
     return (
-      <Row className="mb-2" key={label}>
+      <Row key={label}>
         <Col sm={4}>
           <strong>{label}:</strong>
         </Col>
@@ -109,7 +109,7 @@ const UserProfile = () => {
     return (
       <div className="mb-3" key={label}>
         <h6 className="text-secondary">{label}</h6>
-        <Row className="mb-2">
+        <Row className="">
           <Col sm={4}>
             <strong>
               {["Graduation", "Diploma", "Post Graduation"].includes(
