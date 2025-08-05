@@ -29,15 +29,18 @@ function NavBar() {
           );
           //console.log("photoUser",response.data.photoUser);
 
-          const {name,picture} = response.data;
+          const {name,photo} = response.data;
+
+          console.log("photo",photo);
+          
 
           const capitalizedName = name
             .split(" ")
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
             .join(" ");
 
-            const fullphotoURL= picture?.startswith("http")? picture
-            : `${BASE_URLL}${picture}`;
+            const fullphotoURL= photo?.startsWith("http") ? photo: `${BASE_URLL}${photo}`;
+        
 
           setUserName(capitalizedName);
           setPhotoUser(fullphotoURL);
