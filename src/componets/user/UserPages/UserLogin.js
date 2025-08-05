@@ -58,7 +58,7 @@ console.log("data", data.access)
   localStorage.setItem("refresh_token1", data.refresh_token);
     // const hasSearched = localStorage.getItem("job_title") === "true";
 
-  navigate("/LeftNav"); // or your actual LeftNav route path
+  navigate("/UserDashboard"); // or your actual LeftNav route path
   //   const accessToken = data.access;
   // const refreshToken = data.refresh;
 
