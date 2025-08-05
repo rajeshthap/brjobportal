@@ -9,6 +9,7 @@ import {
   Button,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { MdKeyboardBackspace } from "react-icons/md";
 import {
   FaEnvelope,
   FaLinkedinIn,
@@ -21,6 +22,9 @@ import {
 } from "../../../api/auth";
 import EditProfilePopup from "../../../componets/user/UserPages/UserSetProfile";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
+import { TbPhotoEdit } from "react-icons/tb";
+import { HiOutlineDownload } from "react-icons/hi";
+import { RiFileEditLine } from "react-icons/ri";
 
 const UserProfile = () => {
   const userId = localStorage.getItem("user_id");
@@ -164,10 +168,10 @@ const UserProfile = () => {
       <Card className="p-4 shadow-lg rounded-4 mt-5 mb-5 my-profile">
         <Row className="mb-4">
           <Row>
-            <Col><Button variant="secondary" onClick={() => navigate(-1)}>
-              ← Back
+            <Col md={1} sm={12} ><Button variant="" className="back-btn" onClick={() => navigate(-1)}>
+              <MdKeyboardBackspace /> Back
             </Button></Col>
-            <Col> <h3 className="fw-bold">My Profile</h3></Col>
+            <Col md={11} sm={112} className="text-center"> <h3>My Profile</h3></Col>
 
           </Row>
         </Row>
@@ -183,7 +187,7 @@ const UserProfile = () => {
                   width={160}
                   height={160}
                   alt="Profile"
-                  style={{ objectFit: "cover", border: "3px solid #198754" }}
+                  style={{ objectFit: "cover", border: "6px solid #1a73e82f" }}
                 />
               ) : (
                 <FaUserCircle size={160} className="text-muted mb-3" />
@@ -191,11 +195,11 @@ const UserProfile = () => {
 
               <Button
                 variant="light"
-                className="position-absolute bottom-0 end-0 p-2 border rounded-circle"
-                style={{ backgroundColor: "#ffffffcc" }}
+                className="position-absolute bottom-0 end-0 p-2 border  edit-circle"
+                // style={{ backgroundColor: "#0d95e1" }}
                 onClick={() => setShowEdit(true)}
               >
-                <i className="bi bi-camera-fill text-dark" />
+                <TbPhotoEdit />
               </Button>
             </div>
 
@@ -222,41 +226,54 @@ const UserProfile = () => {
           </Col>
 
           <Col md={8}>
-            <div className="d-flex justify-content-end align-items-center mb-4">
+            <div className="user-edit-row align-items-center mb-4">
 
 
 
+              {userData.generated_pdf ? (
+                <Button
+                  href={userData.generated_pdf}
+                  className="edit-p-btn px-4 me-2"
+                  target="_blank"
+                  variant=""
+                  rel="noopener noreferrer"
+                  download
+                >
+                  <HiOutlineDownload />
+                  Download Resume
+                </Button>
+              ) : (
+                <span className="text-muted">No resume uploaded</span>
+              )}
               <Button
-                className="rounded-pill px-4 me-2"
-                variant="primary"
-                onClick={() => setShowEdit(true)}
-              >
-                Edit Profile
-              </Button>
-              <Button
-                className="rounded-pill px-4"
-                variant="outline-secondary"
+                className="edit-r-btn px-4 "
+                variant=""
                 onClick={() => navigate("/ViewProfile")}
-              >
+              ><span className="profile-icon"> < RiFileEditLine /></span>
                 Edit Resume
               </Button>
             </div>
-            <section className="mb-4">
-              <h5 className="text-primary border-bottom pb-1 mb-3">
-                Personal Information
-              </h5>
-              {renderField("Address Line 1", userData.adress1)}
-              {renderField("Address Line 2", userData.adress2)}
-              {renderField("City", userData.city)}
-              {renderField("State", userData.state)}
-              {renderField("Zip Code", userData.zip_code)}
-              {renderField("Objective", userData.objetive)}
-              {renderField("Skills", userData.skills)}
-              {renderField("Languages", userData.languages)}
-              {renderField("Hobbies", userData.Hobbies)}
-              {renderField("Full_time", userData.Full_time)}
-              {renderField("Distance_learning", userData.Distance_learning)}
-              {/* {userData?.courseType === "Full_time" &&
+            <section className="mb-4 edu-datials">
+              <div className="bg-primary-subtle p-2 border-dashed border-primary rounded mb-1">
+
+                <h5>
+                  Personal Information
+                </h5>
+
+              </div>
+              <div className="edu-data border-dashed">
+                {renderField("Address Line 1", userData.adress1)}
+                {renderField("Address Line 2", userData.adress2)}
+                {renderField("City", userData.city)}
+                {renderField("State", userData.state)}
+                {renderField("Zip Code", userData.zip_code)}
+                {renderField("Objective", userData.objetive)}
+                {renderField("Skills", userData.skills)}
+                {renderField("Languages", userData.languages)}
+                {renderField("Hobbies", userData.Hobbies)}
+                {renderField("Full_time", userData.Full_time)}
+                {renderField("Distance_learning", userData.Distance_learning)}
+                {/* {userData?.courseType === "Full_time" &&
                 userData.Full_time &&
                 renderField("Full Time", userData.Full_time)}
 
@@ -272,51 +289,39 @@ const UserProfile = () => {
                 </>
               )} */}
 
-              {renderField(
-                "Professional Experience",
-                userData.Proffesional_experience
-              )}
+                {renderField(
+                  "Professional Experience",
+                  userData.Proffesional_experience
+                )}
+
+              </div>
             </section>
 
-            <section className="mb-4">
-              <h5 className="text-primary border-bottom pb-1 mb-3">
-                Education
-              </h5>
-              {hasValidData(userData.Tenth_Details) &&
-                renderEducation("10th Details", userData.Tenth_Details)}
-              {hasValidData(userData.Twelth_Details) &&
-                renderEducation("12th Details", userData.Twelth_Details)}
-              {hasValidData(userData.Diploma_Details) &&
-                renderEducation("Diploma", userData.Diploma_Details)}
-              {hasValidData(userData.Graduation_Details) &&
-                renderEducation("Graduation", userData.Graduation_Details)}
-              {hasValidData(userData.Masters_Details) &&
-                renderEducation("Masters", userData.Masters_Details)}
+            <section className="mb-4 edu-datials">
+
+              <div className="bg-primary-subtle p-2 border-dashed border-primary rounded mb-1">
+
+                <h5>
+                  Education
+                </h5>
+
+              </div>
+              <div className="edu-data border-dashed">
+                {hasValidData(userData.Tenth_Details) &&
+                  renderEducation("10th Details", userData.Tenth_Details)}
+                {hasValidData(userData.Twelth_Details) &&
+                  renderEducation("12th Details", userData.Twelth_Details)}
+                {hasValidData(userData.Diploma_Details) &&
+                  renderEducation("Diploma", userData.Diploma_Details)}
+                {hasValidData(userData.Graduation_Details) &&
+                  renderEducation("Graduation", userData.Graduation_Details)}
+                {hasValidData(userData.Masters_Details) &&
+                  renderEducation("Masters", userData.Masters_Details)}
+
+              </div>
             </section>
 
-            <section>
-              <h5 className="text-primary border-bottom pb-1 mb-3">Resume</h5>
-              <Row className="mb-3">
-                <Col sm={4}>
-                  <strong>Resume (PDF):</strong>
-                </Col>
-                <Col sm={8}>
-                  {userData.generated_pdf ? (
-                    <a
-                      href={userData.generated_pdf}
-                      className="btn btn-outline-primary rounded-pill"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      download
-                    >
-                      Download Resume
-                    </a>
-                  ) : (
-                    <span className="text-muted">No resume uploaded</span>
-                  )}
-                </Col>
-              </Row>
-            </section>
+
           </Col>
         </Row>
       </Card>

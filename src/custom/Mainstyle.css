@@ -10,11 +10,18 @@
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
     backgrouawc-color: var(--awc-blue-light-bg);
-  } */
+  } 
 
 /* svg {
       fill: #0d77cb;
     } */
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+
+
 :root {
   --bs-breakpoint-xs: 0;
   --bs-breakpoint-sm: 576px;
@@ -374,6 +381,86 @@ a.nav-brnd.navbar-brand {
   margin-top: 96px !important;
 }
 
+/*-----------User-prolfie---------------*/
+.back-btn {
+  background-color: #0d95e1;
+  color: #ffffff;
+  border: 1px solid var(--awc-main-primary-blue);
+  border-radius: var(--awc-space-200);
+  font-size: var(--awc-space-300);
+  font-weight: 600;
+}
+
+.edit-p-btn {
+  background-color: #f6653c;
+  padding: var(--awc-space-200) var(--awc-space-200);
+  font-size: var(--awc-space-300);
+  color: #fff !important;
+  border-radius: var(--awc-space-200) !important;
+}
+
+.edit-p-btn:hover {
+  background-color: #ca4520;
+}
+
+.edit-r-btn {
+  background-color: #77cc6d;
+  padding: var(--awc-space-200) var(--awc-space-200);
+  font-size: var(--awc-space-300);
+  color: #fff !important;
+  border-radius: var(--awc-space-200) !important;
+  border: none;
+}
+
+.edit-r-btn:hover {
+  background-color: #539f4a;
+}
+
+.edit-circle {
+  background-color: var(--awc-main-primary-blue);
+  color: var(--awc-white);
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+}
+
+.user-edit-row {
+  display: flex;
+  justify-content: end;
+}
+
+.border-dashed {
+  border: 1px dashed;
+}
+
+.bg-primary-subtle h5 {
+  --bs-text-opacity: 1;
+  color: #010101 !important;
+  font-size: var(--awc-space-400);
+  margin-bottom: var(--awc-space-0) !important;
+}
+
+.edu-datials {
+  font-size: var(--awc-space-350)
+}
+
+.edu-data {
+  background-color: #f4f6f9;
+  padding: var(--awc-space-300);
+  border-radius: var(--awc-space-200);
+}
+
+.text-secondary {
+  --bs-text-opacity: 1;
+  color: rgb(26 115 232) !important;
+  font-weight: 500;
+}
+
+.profile-icon {
+  font-size: var(--awc-space-350);
+  padding-right: var(--awc-space-150);
+}
+
 @media only screen and (max-width: 568px) {
   .awc-btn-bill {
     text-align: center !important;
@@ -491,6 +578,11 @@ a.nav-brnd.navbar-brand {
     margin-top: var(--awc-space-200);
     padding: var(--awc-space-300);
     border-radius: var(--awc-space-400);
+  }
+
+  .user-edit-row {
+    display: flex;
+    justify-content: center;
   }
 
 
