@@ -61,7 +61,7 @@ const AdminForgotPassword = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center mt-5">
+    <Container className="d-flex justify-content-center align-items-center mt-5 edit-main">
       <Card style={{ width: "100%", maxWidth: "400px" }} className="p-4 shadow">
         <h3 className="text-center mb-4">Reset Password</h3>
 
@@ -69,7 +69,7 @@ const AdminForgotPassword = () => {
 
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Email or Phone</Form.Label>
+            <Form.Label>Email or Phone</Form.Label> <span class="text-danger">*</span>
             <Form.Control
               type="text"
               name="identifier"
@@ -81,7 +81,7 @@ const AdminForgotPassword = () => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>New Password</Form.Label>
+            <Form.Label>New Password</Form.Label> <span class="text-danger">*</span>
             <Form.Control
               type="password"
               name="password"
@@ -93,7 +93,7 @@ const AdminForgotPassword = () => {
           </Form.Group>
 
           <Form.Group className="mb-4">
-            <Form.Label>Confirm Password</Form.Label>
+            <Form.Label>Confirm Password</Form.Label> <span class="text-danger">*</span>
             <Form.Control
               type="password"
               name="con_password"
