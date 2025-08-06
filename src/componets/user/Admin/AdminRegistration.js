@@ -228,7 +228,7 @@ const AdminRegistration = () => {
               <Form.Group className="mb-3">
                 <Form.Label>Passport/ID Number</Form.Label> <span class="text-danger">*</span>
                 <Form.Control
-                  type="number"
+                  type="input"
                   name="passport_or_id_number"
                   value={formData.passport_or_id_number}
                   onChange={handleChange}

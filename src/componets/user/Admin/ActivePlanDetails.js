@@ -6,7 +6,7 @@ import Payimg from "../../../assets/images/pyt-img.png";
 
 const ActivePlanDetails = ({ plan }) => {
   return (
-    <div class="container">
+    <div class="container edit-main">
       <div class="row mt-5">
         <div class="col-md-8 col-sm-6">
           <div class="row">
@@ -46,7 +46,7 @@ const ActivePlanDetails = ({ plan }) => {
               <img src={Payimg} alt="payment-imges" className="img-fluid"></img>
             </div>
             <div className="payment-btn text-center">
-             <Link to ="/AdminDashBoard"><Button className="pynt-btn rounded-pill">Pay Now</Button></Link> 
+              <Link to="/AdminDashBoard"><Button className="pynt-btn rounded-pill">Pay Now</Button></Link>
             </div>
           </div>
         </div>
