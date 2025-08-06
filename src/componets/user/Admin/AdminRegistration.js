@@ -114,7 +114,7 @@ const AdminRegistration = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api3/admin_registration/",
+        "https://adminnanda.in/Job/api3/admin_registration/",
         payload,
         {
           headers: {
