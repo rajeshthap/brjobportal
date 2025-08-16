@@ -6,7 +6,6 @@ import axios from "axios";
 
 const AdminRegistration = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     company_legal_name: "",
     first_name: "",
@@ -112,6 +111,7 @@ const AdminRegistration = () => {
     if (formData.tax_registration_doc)
       payload.append("tax_registration_doc", formData.tax_registration_doc);
 
+
     try {
       const response = await axios.post(
         "https://adminnanda.in/Job/api3/admin_registration/",
@@ -141,8 +141,22 @@ const AdminRegistration = () => {
       //       }
       navigate("/ActivePlan");
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Registration failed. Please check all fields and try again.");
+      if (error.response && error.response.data && error.response.data.error) {
+      const errorMessage = error.response.data.error;
+
+      // Check for duplicate email error
+      if (errorMessage.includes("Duplicate entry") && errorMessage.includes("email")) {
+        alert("This email is already registered. Please use a different one.");
+      } else {
+        alert("Registration failed: " + errorMessage);
+      }
+    } else {
+      // General error
+      alert("Something went wrong. Please try again.");
+    }
+     
+     // console.error("Error submitting form:",error);
+      //alert("Registration failed. Please check all fields and try again.");
     }
   };
 

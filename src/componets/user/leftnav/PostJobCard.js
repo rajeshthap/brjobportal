@@ -13,7 +13,6 @@ import {
   FaMapMarkerAlt,
   FaBriefcase,
   FaStar,
-  FaBookmark,
   FaRupeeSign,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -21,9 +20,8 @@ import axios from "axios";
 import "../../../assets/css/PostJobCard.css";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 
-const PostJobCard = ({ jobs }) => {
+const PostJobCard = ({ jobs = [], onJobSaved }) => {
   const navigate = useNavigate();
-
   const accessToken11 = localStorage.getItem("access_token1");
 
   const [searchFields, setSearchFields] = useState({
@@ -31,12 +29,12 @@ const PostJobCard = ({ jobs }) => {
     location: "",
     experience: "",
   });
-
-  const [savedJobs, setSavedJobs] = useState([]);
+  const [savedJobs, setSavedJobs] = useState([]); // store job ids as strings
   const [alertMsg, setAlertMsg] = useState(null);
   const [alertVariant, setAlertVariant] = useState("success");
   const [filteredJobs, setFilteredJobs] = useState([]);
 
+  // Recompute filteredJobs whenever jobs, searchFields, or savedJobs change
   useEffect(() => {
     if (!jobs) return;
 
@@ -46,7 +44,6 @@ const PostJobCard = ({ jobs }) => {
 
     let minExp = null;
     let maxExp = null;
-
     if (experience.includes("-")) {
       const parts = experience.split("-");
       if (parts.length === 2) {
@@ -60,23 +57,31 @@ const PostJobCard = ({ jobs }) => {
     }
 
     const filtered = jobs.filter((job) => {
-      const jobTitle = job.job_title?.toLowerCase() || "";
-      const jobLocation = job.location?.toLowerCase() || "";
-      const jobMinExp = parseInt(job.Min_work_experience || 0);
-      const jobMaxExp = parseInt(job.Max_work_experience || 100);
+      const idStr = String(job.job_id ?? job.id ?? "");
+      // skip jobs that are already saved (savedJobs holds strings)
+      if (savedJobs.includes(idStr)) return false;
+
+      const jobTitle = (job.job_title || "").toLowerCase();
+      const jobLocation = (job.location || "").toLowerCase();
+      const jobMinExp = parseInt(job.Min_work_experience || 0, 10);
+      const jobMaxExp = parseInt(job.Max_work_experience || 100, 10);
 
       const matchTitle = !title || jobTitle.includes(title);
       const matchLocation = !location || jobLocation.includes(location);
+
       const matchExperience =
-        minExp === null ||
-        maxExp === null ||
-        (jobMaxExp >= minExp && jobMinExp <= maxExp);
+        (minExp === null && maxExp === null) ||
+        (minExp !== null && maxExp !== null
+          ? jobMaxExp >= minExp && jobMinExp <= maxExp
+          : minExp !== null
+          ? jobMaxExp >= minExp
+          : jobMinExp <= maxExp);
 
       return matchTitle && matchLocation && matchExperience;
     });
 
     setFilteredJobs(filtered);
-  }, [searchFields, jobs]);
+  }, [searchFields, jobs, savedJobs]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,59 +89,25 @@ const PostJobCard = ({ jobs }) => {
   };
 
   const getDaysAgoText = (dateStr) => {
-    const postDate = new Date(dateStr);
+    const postDate = new Date(Date.parse(dateStr));
     const currentDate = new Date();
     const diffTime = currentDate - postDate;
     const daysAgo = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     return daysAgo === 0 ? "Posted today" : `${daysAgo} Days Ago`;
   };
-  const handleApplyJob = (job) => {
-    const jobId = job.job_id || job.Job_id;
-    const employeeId = job.employee_id || job.Employee_id;
 
-    // Save IDs to localStorage
-    localStorage.setItem("selected_job_id", jobId);
-    localStorage.setItem("selected_employee_id", employeeId);
-
-    // Navigate to job details page
-    navigate("/JobDetails", {
-      state: {
-        job,
-        job_id: jobId,
-        employee_id: employeeId,
-      },
-    });
-  };
-
-  const handleReadMore = (job) => {
-    const jobId = job.job_id || job.Job_id;
-    const employeeId = job.employee_id || job.Employee_id;
-
-    // Save IDs to localStorage
-    localStorage.setItem("selected_job_id", jobId);
-    localStorage.setItem("selected_employee_id", employeeId);
-    // Navigate to job details page
-    navigate("/JobDetails", {
-      state: {
-        job,
-        job_id: jobId,
-        employee_id: employeeId,
-      },
-    });
-  };
-
-
-
+  // SAVE handler - consistent identifier usage and immediate local removal
   const handleSaveJob = async (job) => {
     const userId = localStorage.getItem("user_id");
-
-    if (!userId || !job || !job.id) {
+    const jobIdentifier = job.job_id ?? job.id;
+    if (!userId || !jobIdentifier) {
       setAlertMsg("User not logged in or job details missing.");
       setAlertVariant("danger");
       return;
     }
 
-    if (savedJobs.includes(job.id)) {
+    const jobIdStr = String(jobIdentifier);
+    if (savedJobs.includes(jobIdStr)) {
       setAlertMsg("This job has already been saved.");
       setAlertVariant("warning");
       return;
@@ -144,14 +115,13 @@ const PostJobCard = ({ jobs }) => {
 
     const payload = {
       user: userId,
-      job_id: job.job_id || job.id,
+      job_id: jobIdentifier,
       job_title: job.job_title || "Untitled Job",
       sub_title: job.sub_title || "No subtitle",
-      key_skills: "dummy skill",
+      key_skills: job.key_skills || "Not specified",
       comment: "Saved by user",
       location: job.location || "Not specified",
-      experience: `${job.Min_work_experience || 0} - ${job.Max_work_experience || 0
-        }`,
+      experience: `${job.Min_work_experience || 0} - ${job.Max_work_experience || 0}`,
       salary: `${job.Min_salary || 0} - ${job.Max_salary || "Not disclosed"}`,
       work_mode: job.work_mode || "Not specified",
       education: job.education || "Not specified",
@@ -159,14 +129,29 @@ const PostJobCard = ({ jobs }) => {
     };
 
     try {
-      await axios.post(`${BASE_URLL}api/Saved-post_by_user/`, payload, {
+      // POST to backend
+      const url = `${BASE_URLL}api/Saved-post_by_user/`;
+      const res = await axios.post(url, payload, {
         headers: {
           Authorization: `Bearer ${accessToken11}`,
         },
       });
-      setSavedJobs((prev) => [...prev, job.id]);
+      // If success:
+      setSavedJobs((prev) => [...prev, jobIdStr]);
+
+      // Remove from filtered list immediately
+      setFilteredJobs((prev) =>
+        prev.filter((j) => String(j.job_id ?? j.id) !== jobIdStr)
+      );
+
+      // Optional: notify parent to remove from global `jobs` state
+      if (typeof onJobSaved === "function") {
+        onJobSaved(jobIdStr);
+      }
+
       setAlertMsg("Job saved successfully.");
       setAlertVariant("success");
+      console.log("Saved job response:", res.data);
     } catch (error) {
       console.error("Error saving job:", error.response?.data || error.message);
       setAlertMsg("Failed to save the job.");
@@ -190,7 +175,7 @@ const PostJobCard = ({ jobs }) => {
   }
 
   return (
-    <Container fluid className=" dash-board-card">
+    <Container fluid className="dash-board-card">
       <Form className="mb-4 bg-light rounded shadow-sm ">
         <Row className="adv-job-search">
           <Col md={4} sm={12}>
@@ -238,110 +223,108 @@ const PostJobCard = ({ jobs }) => {
         </Alert>
       ) : (
         <Row>
-          {filteredJobs.map((job, index) => (
-            <Col md={12} key={index} className="mb-2 p-0">
-              <Card className="job-card p-3 shadow-sm ">
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <h5 className="mb-1">{job.job_title}</h5>
-                    <div className="text-muted fw-medium">
-                      {job.company_name}
+          {filteredJobs.map((job, index) => {
+            const idStr = String(job.job_id ?? job.id ?? index);
+            return (
+              <Col md={12} key={idStr} className="mb-2 p-0">
+                <Card className="job-card p-3 shadow-sm ">
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <h5 className="mb-1">{job.job_title}</h5>
+                      <div className="text-muted fw-medium">{job.company_name}</div>
+                      <div className="text-warning mt-1">
+                        <FaStar className="me-1" /> 3.5 | 7 Reviews
+                      </div>
                     </div>
-                    <div className="text-warning mt-1">
-                      <FaStar className="me-1" /> 3.5 | 7 Reviews
-                    </div>
-                  </div>
-                  <div>
-                    <div
-                      className="  text-black d-flex justify-content-center align-items-center"
-
-                    >
-                      <strong>
-                        {job.company_name
-                          ? `${job.company_name} (${job.company_name
-                            .split(" ")
-                            .map((w) => w.charAt(0).toUpperCase())
-                            .join("")})`
-                          : "Company Name (NA)"}
-                      </strong>
-
+                    <div>
+                      <div className="text-black d-flex justify-content-center align-items-center">
+                        <strong>
+                          {job.company_name
+                            ? `${job.company_name} (${job.company_name
+                                .split(" ")
+                                .map((w) => w.charAt(0).toUpperCase())
+                                .join("")})`
+                            : "Company Name (NA)"}
+                        </strong>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="d-flex flex-wrap gap-3 text-muted mt-3 mb-2">
-                  <span>
-                    <FaBriefcase className="me-1" />
-                    {job.Min_work_experience} - {job.Max_work_experience} Yrs
-                  </span>
-                  <span>
-                    <FaRupeeSign className="me-1" />
-                    {job.Min_salary} - {job.Max_salary || "Not disclosed"}
-                  </span>
-                  <span>
-                    <FaMapMarkerAlt className="me-1" />
-                    {job.location}
-                  </span>
-                </div>
-
-                <p className="text-truncate mb-2">
-                  {job.job_description || "No description provided"}
-                </p>
-
-                <div className="d-flex flex-wrap mb-2">
-                  {job.sub_title?.split(",").map((item, i) => (
-                    <span
-                      key={i}
-                      className="badge bg-light text-primary border me-2 mb-1"
-                    >
-                      {item.trim()}
+                  <div className="d-flex flex-wrap gap-3 text-muted mt-3 mb-2">
+                    <span>
+                      <FaBriefcase className="me-1" />
+                      {job.Min_work_experience} - {job.Max_work_experience} Yrs
                     </span>
-                  ))}
-                  {job.key_skills?.split(",").map((item, i) => (
-                    <span
-                      key={i}
-                      className="badge bg-light text-primary border me-2 mb-1"
-                    >
-                      {item.trim()}
+                    <span>
+                      <FaRupeeSign className="me-1" />
+                      {job.Min_salary} - {job.Max_salary || "Not disclosed"}
                     </span>
-                  ))}
-                </div>
-
-                <div className="d-flex justify-content-between align-items-center">
-                  <span className="text-muted">{getDaysAgoText(job.date)}</span>
-                  <div className="d-flex align-items-center gap-3">
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="rounded-pill"
-                      onClick={() => handleSaveJob(job)}
-                      disabled={savedJobs.includes(job.id)}
-                    >
-                      {savedJobs.includes(job.id) ? "Saved" : "Save"}
-                    </Button>
-                    {/* <FaBookmark style={{ cursor: "pointer" }} /> */}
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="rounded-pill"
-                      onClick={() => handleReadMore(job)}
-                    >
-                      Read More
-                    </Button>
-                    {/* <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="rounded-pill"
-                      onClick={() => handleApplyJob(job)}
-                    >
-                      Apply
-                    </Button> */}
-
+                    <span>
+                      <FaMapMarkerAlt className="me-1" />
+                      {job.location}
+                    </span>
                   </div>
-                </div>
-              </Card>
-            </Col>
-          ))}
+
+                  <p className="text-truncate mb-2">
+                    {job.job_description || "No description provided"}
+                  </p>
+
+                  <div className="d-flex flex-wrap mb-2">
+                    {job.sub_title?.trim() &&
+                      job.sub_title.split(",").map((item, i) => (
+                        <span
+                          key={`sub-${i}`}
+                          className="badge bg-light text-primary border me-2 mb-1"
+                        >
+                          {item.trim()}
+                        </span>
+                      ))}
+                    {job.key_skills?.trim() &&
+                      job.key_skills.split(",").map((item, i) => (
+                        <span
+                          key={`skill-${i}`}
+                          className="badge bg-light text-primary border me-2 mb-1"
+                        >
+                          {item.trim()}
+                        </span>
+                      ))}
+                  </div>
+
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="text-muted">{getDaysAgoText(job.date)}</span>
+                    <div className="d-flex align-items-center gap-3">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        className="rounded-pill"
+                        onClick={() => handleSaveJob(job)}
+                        disabled={savedJobs.includes(idStr)}
+                      >
+                        {savedJobs.includes(idStr) ? "Saved" : "Save"}
+                      </Button>
+
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        className="rounded-pill"
+                        onClick={() =>
+                          navigate("/JobDetails", {
+                            state: {
+                              job,
+                              job_id: job.job_id ?? job.id,
+                              employee_id: job.employee_id ?? job.Employee_id,
+                            },
+                          })
+                        }
+                      >
+                        Read More
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       )}
     </Container>

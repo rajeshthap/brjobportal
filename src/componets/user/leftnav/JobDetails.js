@@ -29,7 +29,7 @@ const BASE_URL = "https://adminnanda.in";
 const JobDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const job = location.state?.job;
+   const { job, handleDelete } = location.state || {};
 
   const [userData, setUserData] = useState(null);
   const [resumeData, setResumeData] = useState(null);
@@ -72,6 +72,25 @@ const JobDetails = () => {
 const handleApplyJob = async () => {
   setIsApplying(true);
   setApplyError("");
+   //alert(`You applied for: ${job.job_title}`);
+
+    // If handleDelete function exists, remove from saved jobs list
+    try{
+    if (handleDelete) {
+      await handleDelete(job.job_id);
+    }
+     // Navigate to applications page (optional)
+    navigate("/MyAppliedJob ");
+  }
+  catch(err){
+    setApplyError("Failed to apply for job");
+}
+finally{
+  setIsApplying(false);
+}
+
+  
+
 
   const accessToken11 = localStorage.getItem("access_token1");
   const employeeId = localStorage.getItem("selected_employee_id");

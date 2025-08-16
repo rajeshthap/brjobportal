@@ -2,19 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import SavedJobCard from "./SavedJobCard";
 import { savedJobPostView, deleteSavedJobById } from "../../../api/auth";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const SavedJobsList = () => {
   const [savedJobs, setSavedJobs] = useState([]);
-
+  const navigate=useNavigate();
+   const location=useLocation();
   useEffect(() => {
     const getSavedJobs = async () => {
       const token = localStorage.getItem("token");
       const jobs = await savedJobPostView(token);
+
       setSavedJobs(jobs);
+      
     };
 
     getSavedJobs();
-  }, []);
+  }, [location]);
 
   const handleDelete = async (jobId) => {
     const token = localStorage.getItem("token");
@@ -25,7 +30,8 @@ const SavedJobsList = () => {
       console.log("Delete API response:", response);
 
       setSavedJobs((prevJobs) =>
-        prevJobs.filter((job) => job.job_id !== jobId)
+        prevJobs.filter((job) => job.job_id  !== jobId
+    )
       );
     } catch (error) {
       alert("Failed to delete job");
@@ -46,7 +52,11 @@ const SavedJobsList = () => {
         <p className="text-muted">Saved Job(s)</p>
       </div> */}
       <Row>  {savedJobs.map((job) => (
-        <SavedJobCard key={job.job_id} job={job} onDelete={handleDelete} />
+        <SavedJobCard key={job.job_id} job={job} onDelete={handleDelete} 
+        onViewDetails={() =>
+              navigate("/job-details", {
+                state: { job, handleDelete },  })
+            }/>
       ))}</Row>
 
     </Container>

@@ -71,6 +71,7 @@ import UsersReport from "./componets/user/Employee/EmployeePage/UsersReport";
 import AssignAccess from "./componets/user/Employee/EmployeePage/AssignAccess";
 import Settings from "./componets/user/Employee/EmployeePage/Settings";
 import Applications from "./componets/user/Employee/EmployeePage/Applications";
+import MyAppliedJob from "./componets/user/leftnav/MyAppliedJob";
 
 function App() {
   return (
@@ -163,7 +164,7 @@ const AppContent = () => {
         <Route path="/Applications" element={<Applications />}/>
 
 
-
+      <Route path="/MyAppliedJob " element={<MyAppliedJob />}/>
         <Route path="/AdminProfile" element={<AdminProfile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
