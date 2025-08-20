@@ -428,7 +428,7 @@ const phoneRef = useRef(null);
             </Form.Group>
 
             {/* Password */}
-            <Form.Group controlId="formPassword">
+            <Form.Group controlId="formPassword" className="mb-3">
               <Form.Label>
                 Password <span className="text-danger">*</span>
               </Form.Label>
