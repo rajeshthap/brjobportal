@@ -17,7 +17,7 @@ const DashBoardUser = ({ onSearch }) => {
         <Col md={4}>
           <Form.Control
             type="text"
-            placeholder="Job title, keywords dhruv  (e.g., React, Developer)"
+            placeholder="Job title, keywords (e.g., React, Developer)"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />

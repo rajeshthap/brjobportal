@@ -46,7 +46,7 @@ const ActivePlanDetails = ({ plan }) => {
               <img src={Payimg} alt="payment-imges" className="img-fluid"></img>
             </div>
             <div className="payment-btn text-center">
-              <Link to="/AdminDashBoard"><Button className="pynt-btn rounded-pill">Pay Now</Button></Link>
+             <Link to ="/AdminDashBoard"><Button className="pynt-btn rounded-pill">Pay Now</Button></Link> 
             </div>
           </div>
         </div>

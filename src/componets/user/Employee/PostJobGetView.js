@@ -68,6 +68,7 @@ const PostJobGetView = () => {
           <tr>
             <th>#</th>
             <th>Company</th>
+            <th>Company Email</th>
             <th>Job Title</th>
             <th>Skills</th>
             <th>Experience</th>
@@ -85,6 +86,7 @@ const PostJobGetView = () => {
             <tr key={job.job_id}>
               <td>{index + 1}</td>
               <td>{job.company_name}</td>
+              <td>{job.Employee_email}</td>
               <td>{job.job_title}</td>
               <td>{job.key_skills}</td>
               <td>

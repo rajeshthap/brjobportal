@@ -6,7 +6,6 @@ import { googleLogin, loginUser } from "../../../api/auth";
 import { jwtDecode } from "jwt-decode";
 import "../../../assets/css/LoginForm.css";
 
-
 const UserLogin = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -23,77 +22,67 @@ const UserLogin = () => {
   const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   const isPhone = (value) => /^\d{10}$/.test(value);
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrors("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors("");
 
-  const { identifier, password } = formData;
+    const { identifier, password } = formData;
 
-  if (!identifier || !password) {
-    setErrors("All fields are required.");
-    return;
-  }
+    if (!identifier || !password) {
+      setErrors("All fields are required.");
+      return;
+    }
 
-  let payload = { password };
+    let payload = { password };
 
-  if (isPhone(identifier)) {
-    payload.phone = identifier;
-  } else if (isEmail(identifier)) {
-    payload.email = identifier;
-  } else {
-    setErrors("Please enter a valid email .");
-    return;
-  }
+    if (isPhone(identifier)) {
+      payload.phone = identifier;
+    } else if (isEmail(identifier)) {
+      payload.email = identifier;
+    } else {
+      setErrors("Please enter a valid email .");
+      return;
+    }
 
-  try {
-    const data = await loginUser(payload);
-    console.log("data ",data)
-    
+    try {
+      const data = await loginUser(payload);
+      
 
-console.log("data", data.access)
+      localStorage.setItem("user_id", data.user_id);
 
-    localStorage.setItem("user_id", data.user_id);
-  
- localStorage.setItem("access_token1", data.access_token);
-  localStorage.setItem("refresh_token1", data.refresh_token);
-    // const hasSearched = localStorage.getItem("job_title") === "true";
+      localStorage.setItem("access_token1", data.access_token);
+      localStorage.setItem("refresh_token1", data.refresh_token);
+      // const hasSearched = localStorage.getItem("job_title") === "true";
 
-  navigate("/UserDashboard"); // or your actual LeftNav route path
-  //   const accessToken = data.access;
-  // const refreshToken = data.refresh;
+      navigate("/UserDashBoard"); // or your actual LeftNav route path
+     
+      // Optional: store in localStorage or cookies
+    } catch (err) {
+      if (err.response) {
+        // Server responded with a status outside 2xx
+        console.error(" Server Response Error:");
+        console.error("Status:", err.response.status);
+        console.error("Headers:", err.response.headers);
+        console.error("Data:", err.response.data);
+        setErrors(err.response.data.detail || "Invalid login credentials.");
+      } else {
+        // Something went wrong setting up the request
+        console.error(" Error Setting Up Request:");
+        console.error("Message:", err.message);
+        setErrors("Something went wrong. Please try again.");
+      }
 
-  // Optional: store in localStorage or cookies
- 
-  } 
-  catch (err) {
-  if (err.response) {
-    // Server responded with a status outside 2xx
-    console.error(" Server Response Error:");
-    console.error("Status:", err.response.status);
-    console.error("Headers:", err.response.headers);
-    console.error("Data:", err.response.data);
-    setErrors(err.response.data.detail || "Invalid login credentials.");
-  } 
-  else {
-    // Something went wrong setting up the request
-    console.error(" Error Setting Up Request:");
-    console.error("Message:", err.message);
-    setErrors("Something went wrong. Please try again.");
-  }
-
-  console.error(" Config:", err.config);
-}
-
-};
-
+      console.error(" Config:", err.config);
+    }
+  };
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
       const credential = credentialResponse.credential;
       const decoded = jwtDecode(credential);
-      console.log("user credential", credential)
+     
       const data = await googleLogin({ token: credential });
-
+     
       localStorage.setItem(
         "googleUser",
         JSON.stringify({
@@ -120,7 +109,9 @@ console.log("data", data.access)
 
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
-          <Form.Label>Email or Phone<span className="text-danger">*</span></Form.Label>
+          <Form.Label>
+            Email or Phone<span className="text-danger">*</span>
+          </Form.Label>
           <Form.Control
             type="text"
             name="identifier"
@@ -133,7 +124,9 @@ console.log("data", data.access)
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>Password<span className="text-danger">*</span></Form.Label>
+          <Form.Label>
+            Password<span className="text-danger">*</span>
+          </Form.Label>
           <div className="position-relative">
             <Form.Control
               type={showPassword ? "text" : "password"}
@@ -179,7 +172,6 @@ console.log("data", data.access)
         </div>
       </Form>
     </div>
-  
   );
 };
 

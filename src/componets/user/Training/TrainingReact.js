@@ -8,12 +8,19 @@ const TrainingReact = () => {
     <div className="main-contanier">
       <div className="my-3 main-mt-0">
         <div className="text-center m-3 mobile-register">
-                          <Link to="/UserRegistration">
-                          <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
-                            Register Now
-                          </button>
-                          </Link>
-                        </div>
+          <Link
+            to="/TrainingRegistration"
+            state={{
+              training_name: "React Training Program",
+              training_description:
+                "A complete hands-on React training program covering fundamentals, hooks, routing, styling, and deployment.",
+            }}
+          >
+            <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
+              Register Now
+            </button>
+          </Link>
+        </div>
         <div className="training-wrapper p-4">
           <Row>
             {/* Left Column (Accordion) */}
@@ -22,15 +29,20 @@ const TrainingReact = () => {
                 <h3 className="section-heading">📚 React Training Program </h3>
                 <Accordion defaultActiveKey="0" flush alwaysOpen>
                   <Accordion.Item eventKey="0">
-                    <Accordion.Header>1. Introduction to React</Accordion.Header>
+                    <Accordion.Header>
+                      1. Introduction to React
+                    </Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
-                        <ul>
-                          <li>What is React? </li>
-                          <li>Why React? (Benefits & Use Cases) </li>
-                          <li>Setting up React environment (Node.js, npm, create-react-app) </li>
-                        </ul>
+                          <ul>
+                            <li>What is React? </li>
+                            <li>Why React? (Benefits & Use Cases) </li>
+                            <li>
+                              Setting up React environment (Node.js, npm,
+                              create-react-app){" "}
+                            </li>
+                          </ul>
                         </Card.Body>
                       </Card>
                     </Accordion.Body>
@@ -55,7 +67,10 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="2">
-                    <Accordion.Header> 3. React Hooks (Modern React)</Accordion.Header>
+                    <Accordion.Header>
+                      {" "}
+                      3. React Hooks (Modern React)
+                    </Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -71,9 +86,7 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="3">
-                    <Accordion.Header>
-                     4. Routing in React
-                    </Accordion.Header>
+                    <Accordion.Header>4. Routing in React</Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -88,9 +101,7 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="4">
-                    <Accordion.Header>
-                      5. Styling in React
-                    </Accordion.Header>
+                    <Accordion.Header>5. Styling in React</Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -105,9 +116,7 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="5">
-                    <Accordion.Header>
-                       6. Forms and Validation
-                    </Accordion.Header>
+                    <Accordion.Header>6. Forms and Validation</Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -122,9 +131,7 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="6">
-                    <Accordion.Header>
-                       7. State Management
-                    </Accordion.Header>
+                    <Accordion.Header>7. State Management</Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -139,9 +146,7 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="7">
-                    <Accordion.Header>
-                      8. API Integration
-                    </Accordion.Header>
+                    <Accordion.Header>8. API Integration</Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -181,7 +186,10 @@ const TrainingReact = () => {
                         <Card.Body>
                           <ul>
                             <li>Build a To-Do App / Blog App </li>
-                            <li>Integrate APIs (e.g., JSONPlaceholder or custom API) </li>
+                            <li>
+                              Integrate APIs (e.g., JSONPlaceholder or custom
+                              API){" "}
+                            </li>
                             <li>Deploy to Netlify/Vercel </li>
                           </ul>
                         </Card.Body>
@@ -190,9 +198,7 @@ const TrainingReact = () => {
                   </Accordion.Item>
 
                   <Accordion.Item eventKey="11">
-                    <Accordion.Header>
-                      11. Deployment
-                    </Accordion.Header>
+                    <Accordion.Header>11. Deployment</Accordion.Header>
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
@@ -233,15 +239,17 @@ const TrainingReact = () => {
                   Enroll now to start your React journey!
                 </p>
                 <div className="text-center mt-3 ">
-                  <Link to="/TrainingRegistration"  state={{
-    training_name: "React Training Program",
-    training_description:
-      "A complete hands-on React training program covering fundamentals, hooks, routing, styling, and deployment.",
-  }}>
-                  
-                  <button className=" btn btn-primary rounded-pill px-4 ">
-                    Register Now
-                  </button>
+                  <Link
+                    to="/TrainingRegistration"
+                    state={{
+                      training_name: "React Training Program",
+                      training_description:
+                        "A complete hands-on React training program covering fundamentals, hooks, routing, styling, and deployment.",
+                    }}
+                  >
+                    <button className=" btn btn-primary rounded-pill px-4 ">
+                      Register Now
+                    </button>
                   </Link>
                 </div>
               </Card>

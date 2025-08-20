@@ -1,5 +1,5 @@
 .section-heading {
-  font-size: 22px;
+    font-size: 22px;
   font-weight: bold;
   color: #2c3e50;
 
@@ -20,7 +20,8 @@
 
 .accordion-header {
   margin-bottom: 0;
-  padding: 8px;
+    padding: 8px;
+
 }
 
 /* .accordion-button:hover {
@@ -119,6 +120,7 @@ button.accordion-button {
   }
 
   .accordion-header {
+    padding: 0px;
     padding: 8px;
     margin-bottom: 4px;
   }
@@ -131,9 +133,16 @@ button.accordion-button {
   padding-top: 120px;
   padding-bottom: 90px;
 }
-
+@media (min-width: 320px) and (max-width: 576px) {
+.mobile-register-now{
+  margin-top: 96px;
+ }
+ .training-wrapper{
+margin-top: 0px !important;
+ }
+}
 @media (max-width: 576px) {
-
+ 
   .training-wrapper {
     margin-top: 28px;
   }

@@ -14,7 +14,7 @@ const SearchCompt = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const [message, setMessage] = useState("");
+  const [, setMessage] = useState("");
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (jobTitle.trim() !== "") {
@@ -40,9 +40,7 @@ const SearchCompt = () => {
     setJobTitle(text);
     setShowSuggestions(false);
   };
-  const handleImageClick = () => {
-    setMessage("One Click Away From Your Dream Job!");
-  };
+ 
   const handleSearchClick = () => {
     const newErrors = {};
     if (!jobTitle.trim()) newErrors.jobTitle = true;
@@ -57,13 +55,13 @@ const SearchCompt = () => {
     localStorage.setItem("job_experience", experience);
 
     // Navigate to results page (LeftNav)
-    navigate("/LeftNav");
+    navigate("/UserDashBoard");
   };
 
   return (
     <div className="job-search-container text-center">
       <div>
-        <Link to="/LeftNav">
+        <Link to="/UserDashBoard">
           <img
             src={JobImage}
             alt="One Click Away From Your Dream Job!"

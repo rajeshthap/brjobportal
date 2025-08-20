@@ -23,13 +23,14 @@ import {
   fetchResumeWithUserDetails,
 } from "../../../api/auth";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
+import AccessRefreshToken from "../Employee/AccessRefreshToken";
 
-const BASE_URL = "https://adminnanda.in";
+
 
 const JobDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-   const { job, handleDelete } = location.state || {};
+  const job = location.state?.job;
 
   const [userData, setUserData] = useState(null);
   const [resumeData, setResumeData] = useState(null);
@@ -37,11 +38,12 @@ const JobDetails = () => {
   const [applySuccess, setApplySuccess] = useState(false);
   const [applyError, setApplyError] = useState("");
   const [isApplying, setIsApplying] = useState(false);
+  const [justApplied, setJustApplied] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log(" Fetching user and resume data...");
+        
         const userId = localStorage.getItem("user_id");
 
         if (!userId) {
@@ -51,13 +53,25 @@ const JobDetails = () => {
         }
 
         const profile = await fetchUserProfileById(userId);
-        console.log(" Fetched profile:", profile);
+        
 
         const resume = await fetchResumeWithUserDetails();
-        console.log(" Fetched resume data:", resume);
+        
 
         setUserData(profile);
         setResumeData(resume);
+
+        const appliedRes = await AccessRefreshToken.get(
+          `${BASE_URLL}api3/GetappliedJob_by_user/${userId}/`
+        );
+
+        const alreadyApplied = appliedRes.data.some(
+          (appliedJob) => appliedJob.job_id === job.job_id
+        );
+
+        if (alreadyApplied) {
+          setApplySuccess(true);
+        }
       } catch (error) {
         console.error(" Error loading profile/resume:", error);
         setApplyError("Failed to load user data.");
@@ -69,127 +83,108 @@ const JobDetails = () => {
     loadData();
   }, [navigate]);
 
-const handleApplyJob = async () => {
-  setIsApplying(true);
-  setApplyError("");
-   //alert(`You applied for: ${job.job_title}`);
+  const handleApplyJob = async () => {
+    setIsApplying(true);
+    setApplyError("");
 
-    // If handleDelete function exists, remove from saved jobs list
-    try{
-    if (handleDelete) {
-      await handleDelete(job.job_id);
-    }
-     // Navigate to applications page (optional)
-    navigate("/MyAppliedJob ");
-  }
-  catch(err){
-    setApplyError("Failed to apply for job");
-}
-finally{
-  setIsApplying(false);
-}
+    setApplySuccess(true);
 
-  
+    setJustApplied(true);
+
+    const accessToken11 = localStorage.getItem("access_token1");
+    const employeeId = localStorage.getItem("selected_employee_id");
+    const jobId = localStorage.getItem("selected_job_id");
+    const user_id = localStorage.getItem("user_id");
 
 
-  const accessToken11 = localStorage.getItem("access_token1");
-  const employeeId = localStorage.getItem("selected_employee_id");
-  const jobId = localStorage.getItem("selected_job_id");
-  const user_id = localStorage.getItem("user_id");
+    try {
+      const formData = new FormData();
 
-  console.log("🧾 Apply job called:");
-  console.log("employeeId:", employeeId);
-  console.log("jobId:", jobId);
-  console.log("user_id:", user_id);
-  console.log("resumeData:", resumeData);
-
-  try {
-    const formData = new FormData();
-
-    if (!resumeData?.generated_pdf) {
-      throw new Error("Resume path is missing.");
-    }
-
-  
-  const resumeURL = resumeData.generated_pdf.includes("http")
-  ? resumeData.generated_pdf
-  : `${BASE_URLL}${resumeData.generated_pdf}`;
-
-console.log("Final resume URL:", resumeURL);
-
-    const resumeResponse = await fetch(resumeURL);
-    if (!resumeResponse.ok) {
-      throw new Error("Resume file not found.");
-    }
-
-    const resumeBlob = await resumeResponse.blob();
-    const resumeFile = new File([resumeBlob], "resume.pdf", {
-      type: "application/pdf",
-    });
-
-    formData.append("employee", employeeId);
-    formData.append("job_id", jobId);
-    formData.append("name", userData.name);
-    formData.append("email", userData.email);
-    formData.append("phone", userData.phone);
-    formData.append("resume", resumeFile);
-    formData.append("job_title", job.job_title);
-    formData.append("company_name", job.company_name);
-    formData.append("user", user_id);
-
-    console.log(" Submitting formData...");
-
-    const response = await axios.post(
-      `${BASE_URL}/Job/api3/ApplyJob/`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken11}`,
-          "Content-Type": "multipart/form-data",
-        },
+      if (!resumeData?.generated_pdf) {
+        throw new Error("Resume path is missing.");
       }
-    );
 
-    console.log(" Server response:", response.status, response.data);
+     const resumeURL = resumeData.generated_pdf.includes("http")
+  ? resumeData.generated_pdf
+  : `${BASE_URLL.replace(/\/+$/, "")}/${resumeData.generated_pdf.replace(/^\/+/, "")}`;
 
-    if (response.status === 200 || response.status === 201) {
-      setApplySuccess(true);
-    } else {
-      setApplyError("Failed to apply for the job.");
+
+      
+
+      const resumeResponse = await fetch(resumeURL);
+      if (!resumeResponse.ok) {
+        throw new Error("Resume file not found.");
+      }
+
+      const resumeBlob = await resumeResponse.blob();
+      const resumeFile = new File([resumeBlob], "resume.pdf", {
+        type: "application/pdf",
+      });
+
+      formData.append("employee", employeeId);
+      formData.append("job_id", jobId);
+      formData.append("name", userData.name);
+      formData.append("email", userData.email);
+      formData.append("phone", userData.phone);
+      formData.append("resume", resumeFile);
+      formData.append("job_title", job.job_title);
+      formData.append("company_name", job.company_name);
+      formData.append("user", user_id);
+
+    
+      const response = await AccessRefreshToken.post(
+        `${BASE_URLL}api3/ApplyJob/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken11}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
+        setApplySuccess(true);
+        setTimeout(() => {
+          navigate("/UserDashBoard");
+        }, 2000);
+      }
+      // console.log(" Server response:", response.status, response.data);
+
+      if (response.status === 200 || response.status === 201) {
+        setApplySuccess(true);
+      } else {
+        setApplyError("Failed to apply for the job.");
+      }
+    } catch (error) {
+      console.error(" Apply job error:", error);
+
+      if (error.response) {
+        console.log(" Full error response:", error.response.data);
+        const errorMsg =
+          error.response.data?.error ||
+          error.response.data?.message ||
+          error.response.data?.detail ||
+          JSON.stringify(error.response.data) ||
+          "Something went wrong. Please try again.";
+        setApplyError(errorMsg);
+      } else if (error.request) {
+        setApplyError("No response from server. Please check your network.");
+      } else {
+        setApplyError(error.message);
+      }
+    } finally {
+      setIsApplying(false);
     }
-  } catch (error) {
-    console.error(" Apply job error:", error);
-
-    if (error.response) {
-      console.log("🧾 Full error response:", error.response.data);
-      const errorMsg =
-        error.response.data?.error ||
-        error.response.data?.message ||
-        error.response.data?.detail ||
-        JSON.stringify(error.response.data) ||
-        "Something went wrong. Please try again.";
-      setApplyError(errorMsg);
-    } else if (error.request) {
-      setApplyError("No response from server. Please check your network.");
-    } else {
-      setApplyError(error.message);
-    }
-  } finally {
-    setIsApplying(false);
-  }
-};
-
-
-
+  };
   if (!job) {
     return <p className="text-center mt-5">No job details found.</p>;
   }
 
   if (loading) {
     return (
-      <div className="text-center mt-5">
+      <div className="text-center loading-text">
         <Spinner animation="border" />
-        <p>Loading job & profile...</p>
+        <p>Loading job for Applay</p>
       </div>
     );
   }
@@ -205,7 +200,7 @@ console.log("Final resume URL:", resumeURL);
         Back
       </Button>
 
-      {applySuccess && (
+      {justApplied && applySuccess && resumeData &&(
         <Alert variant="success" className="d-flex align-items-center gap-2">
           <FaCheckCircle className="text-success" />
           You have successfully applied for this job!
@@ -268,14 +263,14 @@ console.log("Final resume URL:", resumeURL);
         </h6>
 
         <div className="text-end">
-           <Button
-  variant="outline-secondary"
-  onClick={() => navigate(-1)}
-  style={{ marginRight: "18px" }}
->
-  <FaArrowLeft className="me-1" />
-  Back
-</Button>
+          <Button
+            variant="outline-secondary"
+            onClick={() => navigate(-1)}
+            style={{ marginRight: "18px" }}
+          >
+            <FaArrowLeft className="me-1" />
+            Back
+          </Button>
 
           <Button
             variant="success"

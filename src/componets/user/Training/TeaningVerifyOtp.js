@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Card, Row, Container, Col } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // ✅ for navigation
+import { useNavigate } from "react-router-dom";
 import { verifyOTP, resendOTP } from "../../../api/auth";
 
-const UserOtp = () => {
+const TeaningVerifyOtp = () => {
   const [otp, setOtp] = useState("");
   const [countdown, setCountdown] = useState(60);
-  const [phone,] = useState(localStorage.getItem("phone") || "");
+  const [phone, setPhone] = useState("");
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const navigate = useNavigate(); //  hook for redirect
+  const navigate = useNavigate();
+
+  // Get candidate phone from localStorage on mount
+  useEffect(() => {
+    const storedPhone = localStorage.getItem("candidate_phone") || "";
+    console.log("Fetched phone from localStorage:", storedPhone);
+    setPhone(storedPhone);
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -31,17 +39,9 @@ const UserOtp = () => {
     }
 
     try {
-      const data = await verifyOTP(phone, otp);
-      if (!data || !data.success) {
-        setError("Invalid OTP. Please try again.");
-        return;
-      }
+      await verifyOTP(phone, otp);
       setSuccess("OTP verified successfully!");
-
-      //  Redirect to forgot password page after 1.5s
-      setTimeout(() => {
-        navigate("/Forgotpassword");
-      }, 1500);
+      navigate("/TrainingReact"); // Enable if you want to redirect
     } catch (err) {
       console.error("OTP Error:", err);
       setError("Invalid OTP. Please try again.");
@@ -54,7 +54,7 @@ const UserOtp = () => {
     try {
       await resendOTP(phone);
       setSuccess("OTP resent successfully!");
-      setCountdown(60); // Restart countdown
+      setCountdown(60);
     } catch (err) {
       console.error("Resend OTP Error:", err);
       setError("Failed to resend OTP. Try again.");
@@ -72,18 +72,11 @@ const UserOtp = () => {
                 <small>Time remaining: {countdown} sec</small>
               </div>
 
-              {/* Phone Field */}
               <Form.Group className="mb-3">
                 <Form.Label>Phone Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={phone}
-                  disabled
-                  readOnly
-                />
+                <Form.Control type="text" value={phone} disabled readOnly />
               </Form.Group>
 
-              {/* OTP Field */}
               <Form.Group className="mb-3">
                 <Form.Label>Enter OTP</Form.Label>
                 <Form.Control
@@ -95,11 +88,9 @@ const UserOtp = () => {
                 />
               </Form.Group>
 
-              {/* Error and Success Messages */}
               {error && <div className="text-danger mb-2">{error}</div>}
               {success && <div className="text-success mb-2">{success}</div>}
 
-              {/* Buttons */}
               <Button variant="primary" type="submit" className="w-100">
                 Verify OTP
               </Button>
@@ -120,4 +111,4 @@ const UserOtp = () => {
   );
 };
 
-export default UserOtp;
+export default TeaningVerifyOtp;

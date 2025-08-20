@@ -1,18 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { FaBriefcase, FaUserGraduate, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../../api/auth";
 import RegisterImg from "../../../assets/images/register-img.jpeg";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import { googleLogin } from "../../../api/auth"; // Make sure this function is correctly implemented
+import { BASE_URLL } from "../../../api/AxiosBaseUrl";
+import axios from "axios";
 
 const UserRegistration = () => {
   const navigate = useNavigate();
+  const [, setIsRegistering] = useState(false);
+  // const [googleUser, setGoogleUser] = useState(null);
+  
+const emailRef = useRef(null);
+const phoneRef = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const intervalRef = useRef(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
     workStatus: "",
     experience: "",
@@ -42,6 +56,7 @@ const UserRegistration = () => {
       "name",
       "email",
       "password",
+      "confirmPassword",
       "phone",
       "Date_of_Birth",
       "Gender",
@@ -49,17 +64,21 @@ const UserRegistration = () => {
       "experience",
       "photo",
     ];
-
     for (const field of fieldOrder) {
       switch (field) {
         case "name":
-          if (!data.name || !/^[A-Za-z\s]+$/.test(data.name)) {
-            setErrorMessages({ name: "Name must contain only letters and spaces." });
+          if (!data.name || !/^[A-Za-z]+(?:\s[A-Za-z]+)*$/.test(data.name)) {
+            setErrorMessages({
+              name: "Name must contain only letters and spaces.",
+            });
             return false;
           }
           break;
         case "email":
-          if (!data.email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(data.email)) {
+          if (
+            !data.email ||
+            !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(data.email)
+          ) {
             setErrorMessages({ email: "Enter a valid email address." });
             return false;
           }
@@ -67,11 +86,21 @@ const UserRegistration = () => {
         case "password":
           if (
             !data.password ||
-            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_=+])[A-Za-z\d@$!%*?&#^()\-_=+]{8,}$/.test(data.password)
+            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_=+])[A-Za-z\d@$!%*?&#^()\-_=+]{8,}$/.test(
+              data.password
+            )
           ) {
             setErrorMessages({
               password:
                 "Password must be 8+ characters with uppercase, lowercase, number, and symbol.",
+            });
+            return false;
+          }
+          break;
+        case "confirmPassword":
+          if (!data.confirmPassword || data.confirmPassword !== data.password) {
+            setErrorMessages({
+              confirmPassword: "Passwords do not match.",
             });
             return false;
           }
@@ -89,7 +118,9 @@ const UserRegistration = () => {
           } else {
             const dob = new Date(data.Date_of_Birth);
             if (dob > new Date()) {
-              setErrorMessages({ Date_of_Birth: "Date of birth cannot be in the future." });
+              setErrorMessages({
+                Date_of_Birth: "Date of birth cannot be in the future.",
+              });
               return false;
             }
           }
@@ -120,7 +151,6 @@ const UserRegistration = () => {
           break;
       }
     }
-
     setErrorMessages({});
     return true;
   };
@@ -157,58 +187,212 @@ const UserRegistration = () => {
       setErrorMessages({});
     }
   };
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      window.google?.accounts.id?.prompt();
+    }, 10000); // Refresh every 10s
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+    return () => clearInterval(refreshInterval);
+  }, []);
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const credential = credentialResponse.credential;
+      const decoded = jwtDecode(credential);
 
-  const submission = new FormData();
-  for (let key in formData) {
-    if ((key === "photo" || key === "resume") && typeof formData[key] === "string") continue;
-    if (formData[key] !== null && formData[key] !== "") {
-      submission.append(key, formData[key]);
+      const userData = {
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
+      };
+
+      localStorage.setItem("googleUser", JSON.stringify(userData));
+
+      setFormData((prev) => ({
+        ...prev,
+        name: userData.name || "",
+        email: userData.email || "",
+        photo: userData.picture || "",
+      }));
+
+      const data = await googleLogin({ token: credential });
+      localStorage.setItem("job_user_id", data.user_id);
+      
+    } catch (err) {
+      console.error("Google login error:", err);
+      alert(err?.response?.data?.detail || "Google login failed");
     }
-  }
-
-  try {
-    const response = await registerUser(submission);
-    const userId = response?.id || response?.user?.id;
-
-    if (!userId) throw new Error("User ID not returned");
-
-    const userDataWithId = { ...formData, id: userId };
-    localStorage.setItem("userRegistrationData", JSON.stringify(userDataWithId));
-    localStorage.setItem("autoId", userId);
-    alert("Registered successfully!");
-    navigate("/Profile");
-  } catch (error) {
-    console.error("Registration error:", error);
-
-    // If backend returns validation error
-    if (error && typeof error === "object") {
-      const backendErrors = {};
-      if (error.email) backendErrors.email = error.email[0];
-      if (error.phone) backendErrors.phone = error.phone[0];
-      setErrorMessages(backendErrors);
-    } else {
-      alert("Registration failed.");
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsRegistering(true);
+  setLoading(true);
+    if (!validateForm()) {
+      setIsRegistering(false);
+      return;
     }
+  
+    try {
+      // your API call or form submit logic
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+    const submission = new FormData();
+
+    try {
+      for (let key in formData) {
+        if (key === "confirmPassword") continue;
+
+        if (key === "photo") {
+          if (formData.photo instanceof File) {
+            submission.append("photo", formData.photo);
+          } else if (
+            typeof formData.photo === "string" &&
+            formData.photo.startsWith("http")
+          ) {
+            // Convert URL to file
+            const response = await fetch(formData.photo);
+            const blob = await response.blob();
+            const file = new File([blob], "google-photo.jpg", {
+              type: blob.type,
+            });
+            submission.append("photo", file);
+          }
+          continue; // photo is already handled
+        }
+
+        if (key === "resume" && typeof formData.resume === "string") {
+          continue;
+        }
+
+        if (formData[key] !== null && formData[key] !== "") {
+          submission.append(key, formData[key]);
+        }
+      }
+
+      const response = await registerUser(submission);
+      
+      const userId = response?.id || response?.user?.id;
+      if (!userId) throw new Error("User ID not returned");
+
+      localStorage.setItem(
+        "userRegistrationData",
+        JSON.stringify({ ...formData, id: userId })
+      );
+      localStorage.setItem("autoId", userId);
+
+      await axios.post(`${BASE_URLL}api/Send-otp/`, { phone: formData.phone });
+
+      alert("Registered successfully! OTP sent to your phone.");
+      navigate("/UserVerifyOtp", {
+        state: {
+          phone: formData.phone,
+          userId: userId,
+        },
+      });
+    } catch (error) {
+  console.error("Registration error:", error);
+  if (error && typeof error === "object") {
+    const backendErrors = {};
+    if (error.email) {
+      backendErrors.email = error.email[0];
+      setTimeout(() => emailRef.current?.focus(), 0); // Focus email field
+    }
+    if (error.phone) {
+      backendErrors.phone = error.phone[0];
+      if (!backendErrors.email) setTimeout(() => phoneRef.current?.focus(), 0);
+    }
+    setErrorMessages(backendErrors);
+  } else {
+    alert("Registration failed.");
   }
-};
+}
+    finally {
+      setIsRegistering(false);
+    }
+  };
 
+  //  const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsRegistering(true);
 
+  //   if (!validateForm()) {
+  //     setIsRegistering(false);
+  //     return;
+  //   }
+
+  //   const submission = new FormData();
+
+  //   try {
+  //     for (let key in formData) {
+  //       if (key === "confirmPassword") continue;
+
+  //       if (key === "photo") {
+  //         if (formData.photo instanceof File) {
+  //           submission.append("photo", formData.photo);
+  //         } else if (typeof formData.photo === "string" && formData.photo.startsWith("http")) {
+  //           // Convert URL to file
+  //           const response = await fetch(formData.photo);
+  //           const blob = await response.blob();
+  //           const file = new File([blob], "google-photo.jpg", { type: blob.type });
+  //           submission.append("photo", file);
+  //         }
+  //         continue; // photo is already handled
+  //       }
+
+  //       if (key === "resume" && typeof formData.resume === "string") {
+  //         continue;
+  //       }
+
+  //       if (formData[key] !== null && formData[key] !== "") {
+  //         submission.append(key, formData[key]);
+  //       }
+  //     }
+
+  //     const response = await registerUser(submission);
+  //     const userId = response?.id || response?.user?.id;
+  //     if (!userId) throw new Error("User ID not returned");
+
+  //     localStorage.setItem("userRegistrationData", JSON.stringify({ ...formData, id: userId }));
+  //     localStorage.setItem("autoId", userId);
+
+  //     await axios.post(`${BASE_URLL}api/Send-otp/`, { phone: formData.phone });
+
+  //     alert("Registered successfully! OTP sent to your phone.");
+  //     navigate("/UserVerifyOtp", {
+  //       state: {
+  //         phone: formData.phone,
+  //         userId: userId,
+  //       },
+  //     });
+
+  //   } catch (error) {
+  //     console.error("Registration error:", error);
+  //     if (error && typeof error === "object") {
+  //       const backendErrors = {};
+  //       if (error.email) backendErrors.email = error.email[0];
+  //       if (error.phone) backendErrors.phone = error.phone[0];
+  //       setErrorMessages(backendErrors);
+  //     } else {
+  //       alert("Registration failed.");
+  //     }
+  //   } finally {
+  //     setIsRegistering(false);
+  //   }
+  // };
 
   return (
     <div className="register-box container training-wrapper mt-4">
       <Form onSubmit={handleSubmit}>
         <Row>
-          <Col md={7} className="">
+          <Col md={7}>
             <h4 className="fw-bold">Registration</h4>
             <p className="text-muted mb-4">
               Register now to explore personalized services.
             </p>
 
-            {/* Name */}
+            {/* Full Name */}
             <Form.Group className="mb-3">
               <Form.Label>
                 Full Name<span className="text-danger">*</span>
@@ -218,8 +402,8 @@ const handleSubmit = async (e) => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                required
               />
-
               {errorMessages.name && (
                 <div className="text-danger">{errorMessages.name}</div>
               )}
@@ -231,10 +415,12 @@ const handleSubmit = async (e) => {
                 Email ID<span className="text-danger">*</span>
               </Form.Label>
               <Form.Control
+              ref={emailRef}
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                required
               />
               {errorMessages.email && (
                 <div className="text-danger">{errorMessages.email}</div>
@@ -246,13 +432,13 @@ const handleSubmit = async (e) => {
               <Form.Label>
                 Password <span className="text-danger">*</span>
               </Form.Label>
-
               <InputGroup>
                 <Form.Control
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
+                  required
                 />
                 <InputGroup.Text
                   onClick={togglePasswordVisibility}
@@ -261,9 +447,35 @@ const handleSubmit = async (e) => {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </InputGroup.Text>
               </InputGroup>
-
               {errorMessages.password && (
                 <div className="text-danger">{errorMessages.password}</div>
+              )}
+            </Form.Group>
+
+            {/* Confirm Password */}
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Confirm Password <span className="text-danger">*</span>
+              </Form.Label>
+              <InputGroup>
+                <Form.Control
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+                <InputGroup.Text
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </InputGroup.Text>
+              </InputGroup>
+              {errorMessages.confirmPassword && (
+                <div className="text-danger">
+                  {errorMessages.confirmPassword}
+                </div>
               )}
             </Form.Group>
 
@@ -274,10 +486,12 @@ const handleSubmit = async (e) => {
               </Form.Label>
               <Form.Control
                 type="text"
+                ref={phoneRef}
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
                 maxLength={10}
+                required
               />
               {errorMessages.phone && (
                 <div className="text-danger">{errorMessages.phone}</div>
@@ -294,6 +508,7 @@ const handleSubmit = async (e) => {
                 name="Date_of_Birth"
                 value={formData.Date_of_Birth}
                 onChange={handleInputChange}
+                required
               />
               {errorMessages.Date_of_Birth && (
                 <div className="text-danger">{errorMessages.Date_of_Birth}</div>
@@ -313,6 +528,7 @@ const handleSubmit = async (e) => {
                   value="male"
                   checked={formData.Gender === "male"}
                   onChange={handleInputChange}
+                  required
                 />
                 <Form.Check
                   type="radio"
@@ -331,8 +547,9 @@ const handleSubmit = async (e) => {
             {/* Work Status */}
             <Form.Group className="mb-3">
               <Form.Label>
-                Work Status<span className="text-danger">*</span>
+                Work Status <span className="text-danger">*</span>
               </Form.Label>
+
               <div className="d-flex gap-3 mt-2">
                 <div
                   className={`work-card ${
@@ -341,8 +558,11 @@ const handleSubmit = async (e) => {
                   onClick={() => handleWorkStatus("experienced")}
                   style={{ cursor: "pointer" }}
                 >
-                  <FaBriefcase className="me-2" /> I'm experienced
+                  <button className="reg-btn">
+                    <FaBriefcase className="me-2" /> I'm experienced
+                  </button>
                 </div>
+
                 <div
                   className={`work-card ${
                     formData.workStatus === "fresher" ? "active" : ""
@@ -350,11 +570,28 @@ const handleSubmit = async (e) => {
                   onClick={() => handleWorkStatus("fresher")}
                   style={{ cursor: "pointer" }}
                 >
-                  <FaUserGraduate className="me-2" /> I'm a fresher
+                  <button className="reg-btn">
+                    <FaUserGraduate className="me-2" /> I'm a fresher
+                  </button>
                 </div>
               </div>
+
+              {/* Error message */}
               {errorMessages.workStatus && (
                 <div className="text-danger">{errorMessages.workStatus}</div>
+              )}
+
+              {/* Show input only if fresher is selected */}
+              {formData.workStatus === "fresher" && (
+                <Form.Control
+                  type="text"
+                  className="mt-3"
+                  placeholder="fresher"
+                  value={formData.fresherNote}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fresherNote: e.target.value })
+                  }
+                />
               )}
             </Form.Group>
 
@@ -366,16 +603,20 @@ const handleSubmit = async (e) => {
                   name="experience"
                   value={formData.experience}
                   onChange={handleInputChange}
+                  required
                 >
                   <option value="">Select experience</option>
-                  {[...Array(21).keys()].map((year) => (
-                    <option
-                      key={year}
-                      value={`${year} year${year !== 1 ? "s" : ""}`}
-                    >
-                      {year} year{year !== 1 ? "s" : ""}
-                    </option>
-                  ))}
+                  {[...Array(20).keys()].map((i) => {
+                    const year = i + 1;
+                    return (
+                      <option
+                        key={year}
+                        value={`${year} year${year !== 1 ? "s" : ""}`}
+                      >
+                        {year} year{year !== 1 ? "s" : ""}
+                      </option>
+                    );
+                  })}
                 </Form.Select>
                 {errorMessages.experience && (
                   <div className="text-danger">{errorMessages.experience}</div>
@@ -414,18 +655,45 @@ const handleSubmit = async (e) => {
               )}
             </Form.Group>
 
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-100 mt-3"
-              
-            >
-              Register Now
-            </Button>
+       
+  <Button
+  type="submit"
+  variant="primary"
+  className="w-100 mt-3 d-flex justify-content-center align-items-center btn-register"
+  disabled={loading}
+>
+  {loading ? (
+    <>
+      <span
+        className="spinner-border spinner-border-sm me-2"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      <span>Registering...</span>
+    </>
+  ) : (
+    "Register Now"
+  )}
+</Button>
+
           </Col>
 
-          <Col md={5} className="d-none d-md-block">
-            <img src={RegisterImg} alt="Register" className="img-fluid" />
+          <Col md={5} className=" d-md-block text-center mt-2">
+            <GoogleOAuthProvider clientId="800801519585-qmph1r52j24jc6vav2vvctbbqbe9iini.apps.googleusercontent.com">
+              <div className="text-center">
+                <GoogleLogin
+                  onSuccess={handleGoogleLogin}
+                  onError={() => alert("Login Failed")}
+                />
+              </div>
+            </GoogleOAuthProvider>
+            <div className="img-none-mobile">
+              <img
+                src={RegisterImg}
+                alt="Register"
+                className="img-fluid mb-3"
+              />
+            </div>
           </Col>
         </Row>
       </Form>

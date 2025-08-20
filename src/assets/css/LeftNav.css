@@ -27,8 +27,8 @@
 
 .adv-job-search {
   background-color: var(--awc-white);
-  margin-top: var(--awc-space-200);
-  padding: var(--awc-space-600);
+  margin-top: var(--awc-space-100);
+  padding: var(--awc-space-400);
   border-radius: var(--awc-space-300);
-  box-shadow: var(--bs-box-shadow-sm) !important;
+  /* box-shadow: var(--bs-box-shadow-sm) !important; */
 }

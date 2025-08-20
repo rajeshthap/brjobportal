@@ -10,10 +10,10 @@ function UserAppliedJob() {
   useEffect(() => {
     const employeeId = localStorage.getItem("employee_id");
     const admin_access = localStorage.getItem("admin_access"); // your JWT access token
-     
+
     if (employeeId && admin_access) {
       axios
-        .get(`${BASE_URLL}api3/Get-applied-job/${employeeId}/`, {
+        .get(`${BASE_URLL}api3/GetappliedJob_by_employee/${employeeId}/`, {
           headers: {
             Authorization: `Bearer ${admin_access}`,
           },
@@ -32,7 +32,6 @@ function UserAppliedJob() {
 
   return (
     <div>
-      
       <Table striped bordered hover responsive>
         <thead className="text-white text-center emp-table">
           <tr>
@@ -58,7 +57,10 @@ function UserAppliedJob() {
                 <td>
                   {job.resume ? (
                     <Link
-                      to={`${BASE_URLL}/${job.resume}`}
+                      to={`${BASE_URLL.replace(/\/$/, "")}/${job.resume.replace(
+                        /^\//,
+                        ""
+                      )}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="post-btn btn"

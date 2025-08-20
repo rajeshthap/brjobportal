@@ -1,0 +1,38 @@
+.applied-job-card {
+  border-radius: var(--brjp-space-400) !important;
+  border: none;
+  transition: transform 0.2s ease-in-out;
+  padding: var(--brjp-space-200);
+  border: 1px solid #c5c5c5;
+}
+
+.applied-job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+.icon-color{
+  color: var(--brjp-main-primary-blue);
+}
+.color-gray-off {
+ color: #333333 !important;
+}
+.applied-job-card .card-title {
+  font-size: var(--brjp-space-500);
+  font-weight: bold;
+  color: var(--brjp-main-primary-blue);
+}
+
+.applied-job-card .card-subtitle {
+  font-size: var(--brjp-space-600);
+  color: var(--brjp-gray);
+}
+
+.applied-job-card .card-text strong {
+  color: var(--brjp-black);
+}
+
+.resume-button {
+  margin-top: var(--brjp-space-200);
+  font-weight: 500;
+  border-radius: var(--brjp-space-600)
+}

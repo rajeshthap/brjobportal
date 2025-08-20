@@ -13,11 +13,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-icons-kit";
 import "font-awesome/css/font-awesome.min.css";
 import "../src/custom/style.css";
+
 import UserRegistration from "./componets/user/UserPages/UserRegistration";
 import UserLogin from "./componets/user/UserPages/UserLogin";
 import Cards from "./componets/user/UserPages/Cards";
 import Footer from "./componets/user/footer/Footer";
-import UserDashboard from "./componets/user/leftnav/UserDashboard";
+// import UserDashBoard from "./componets/user/leftnav/UserDashBoard";
 import JobCard from "./componets/user/leftnav/JobCard";
 import PostJobCard from "./componets/user/leftnav/PostJobCard";
 import JobDetails from "./componets/user/leftnav/JobDetails";
@@ -44,7 +45,6 @@ import EmployeeDashBoard from "./componets/user/Employee/EmployeeDashBoard";
 import EmployeeLeftNav from "./componets/user/Employee/EmployeeLeftNav";
 import SettingPassword from "./componets/user/Admin/SettingPassword";
 import ManagerProfile from "./componets/user/Manager/ManagerProfile";
-
 import TrainingReact from "./componets/user/Training/TrainingReact";
 import TrainingPython from "./componets/user/Training/TrainingPython";
 import TrainingWebDesign from "./componets/user/Training/TrainingWebDesign";
@@ -71,8 +71,14 @@ import UsersReport from "./componets/user/Employee/EmployeePage/UsersReport";
 import AssignAccess from "./componets/user/Employee/EmployeePage/AssignAccess";
 import Settings from "./componets/user/Employee/EmployeePage/Settings";
 import Applications from "./componets/user/Employee/EmployeePage/Applications";
-import MyAppliedJob from "./componets/user/leftnav/MyAppliedJob";
-
+import MyAppliedJob from "./componets/user/UserPages/MyAppliedJob";
+import User from "./componets/user/UserPages/User";
+import UserVerifyOtp from "./componets/user/UserPages/UserVerifyOtp";
+import Loading from "./api/Loading";
+import JobListWithPagination from "./componets/user/leftnav/JobListWithPagination";
+import AccessRefreshToken from "./componets/user/Employee/AccessRefreshToken";
+import Success from "./api/Success";
+import TrainingVerifyOtp from "./componets/user/Training/TeaningVerifyOtp";
 function App() {
   return (
     <Router>
@@ -80,7 +86,6 @@ function App() {
     </Router>
   );
 }
-
 // This component is rendered *inside* Router so useLocation() is safe here
 const AppContent = () => {
   const location = useLocation();
@@ -97,7 +102,7 @@ const AppContent = () => {
     "/Settings",
     "/Applications",
     "/UsersReport",
-    "/JobApprovals",
+    "/JobApproval0s",
     "/AssignAccess",
     "/Statistics"
   ]);
@@ -110,7 +115,7 @@ const AppContent = () => {
         <Route path="/" element={<Home />} />
         <Route path="/UserLogin" element={<UserLogin />} />
         <Route path="/UserRegistration" element={<UserRegistration />} />
-        <Route path="/UserDashboard" element={<UserDashboard />} />
+        {/* <Route path="/UserDashBoard" element={<UserDashBoard />} /> */}
         <Route path="/JobCard" element={<JobCard />} />
         <Route path="/PostJobCard/:job_id" element={<PostJobCard />} />
         <Route path="/SavedJobsList" element={<SavedJobsList />} />
@@ -143,29 +148,35 @@ const AppContent = () => {
         <Route path="/TrainingMySql" element={<TrainingMySql />} />
         <Route path="/TrainingBootstrap" element={<TrainingBootstrap />} />
         <Route path="/UIUXTraining" element={<UIUXTraining />} />
-        <Route path="/Communication" element={<Communication />}/>
-        <Route path="/SelfConfidence" element={<SelfConfidence />}/>
-        <Route path="/InterviewSkill" element={<InterviewSkill />}/>
-        <Route path="/PublicSpeaking" element={<PublicSpeaking />}/>
-        <Route path="/PdfTutorial" element={<PdfTutorial />}/>
-        <Route path="/VideoTutorial" element={<VideoTutorial />}/>
-        <Route path="/LiveClass" element={<LiveClass />}/>
-        <Route path="/Event" element={<Event />}/>
-        <Route path="/PostJobGetView" element={<PostJobGetView />}/>
-        <Route path="/EmployeeProfile" element={<EmployeeProfile />}/>
-        <Route path="/TrainingRegistration" element={<TrainingRegistration />}/>
-        <Route path="/SendOtp" element={<SendOtp />}/>
-        <Route path="/UserOtp" element={<UserOtp />}/>
-        <Route path="/Statistics" element={<Statistics />}/>
-        <Route path="/AssignAccess" element={<AssignAccess />}/>
-        <Route path="/JobApprovals" element={<JobApprovals />}/>
-        <Route path="/Settings" element={<Settings />}/>
-        <Route path="/UsersReport" element={<UsersReport />}/>
-        <Route path="/Applications" element={<Applications />}/>
-
-
-      <Route path="/MyAppliedJob " element={<MyAppliedJob />}/>
+        <Route path="/Communication" element={<Communication />} />
+        <Route path="/SelfConfidence" element={<SelfConfidence />} />
+        <Route path="/InterviewSkill" element={<InterviewSkill />} />
+        <Route path="/PublicSpeaking" element={<PublicSpeaking />} />
+        <Route path="/PdfTutorial" element={<PdfTutorial />} />
+        <Route path="/VideoTutorial" element={<VideoTutorial />} />
+        <Route path="/LiveClass" element={<LiveClass />} />
+        <Route path="/Event" element={<Event />} />
+        <Route path="/PostJobGetView" element={<PostJobGetView />} />
+        <Route path="/EmployeeProfile" element={<EmployeeProfile />} />
+        <Route path="/TrainingRegistration" element={<TrainingRegistration />} />
+        <Route path="/SendOtp" element={<SendOtp />} />
+        <Route path="/UserOtp" element={<UserOtp />} />
+        <Route path="/Statistics" element={<Statistics />} />
+        <Route path="/AssignAccess" element={<AssignAccess />} />
+        <Route path="/JobApprovals" element={<JobApprovals />} />
+        <Route path="/Settings" element={<Settings />} />
+        <Route path="/UsersReport" element={<UsersReport />} />
+        <Route path="/Applications" element={<Applications />} />
+        <Route path="/MyAppliedJob" element={<MyAppliedJob />} />
         <Route path="/AdminProfile" element={<AdminProfile />} />
+        <Route path="/User" element={<User />} />
+        <Route path="/UserVerifyOtp" element={<UserVerifyOtp />} />
+        <Route path="/Loading" element={<Loading />} />
+        <Route path="/JobListWithPagination" element={<JobListWithPagination />} />
+        <Route path="/Success" element={<Success />} />
+        <Route path="/AccessRefreshToken" element={<AccessRefreshToken />} />
+        <Route path="/TrainingVerifyOtp" element={<TrainingVerifyOtp />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

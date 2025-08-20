@@ -14,6 +14,7 @@ const JobCard = () => {
 };
   const [formData, setFormData] = useState({
     company_name: "",
+    Employee_email: "",
     job_title: "",
     sub_title: [],
     key_skills: "",
@@ -78,6 +79,7 @@ const JobCard = () => {
     const payload = {
       Employee_id: employee_id,
       company_name: formData.company_name,
+      Employee_email: formData.Employee_email,
       job_title: formData.job_title,
       sub_title: keySkills,
       key_skills: keySkills,
@@ -134,6 +136,18 @@ const JobCard = () => {
                   required
                   name="company_name"
                   value={formData.company_name}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+              <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Employee email:<span className="text-danger">*</span></Form.Label>
+                <Form.Control
+                  type="text"
+                  required
+                  name="Employee_email"
+                  value={formData.Employee_email}
                   onChange={handleChange}
                 />
               </Form.Group>

@@ -8,7 +8,6 @@ import "../../../assets/css/Profile.css";
 import { GetUserRegistration } from "../../../api/auth";
 import { useNavigate } from "react-router-dom";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
-import LocationSelect from "./LocationSelect";
 
 export const UserRegistration = async (formDataToSend) => {
   try {
@@ -51,7 +50,6 @@ const Profile = () => {
     phone: "",
     adress1: "",
     adress2: "",
-    country: "",
     state: "",
     city: "",
     zip_code: "",
@@ -135,7 +133,7 @@ const Profile = () => {
     const storedUserData = localStorage.getItem("userRegistrationData");
     const user = storedUserData ? JSON.parse(storedUserData) : null;
     const userId = user?.id;
-
+    console.log("data", storedUserData);
     if (!userId) {
       alert("User ID not found.");
       return;
@@ -148,7 +146,6 @@ const Profile = () => {
     formDataToSend.append("phone", formData.phone || "");
     formDataToSend.append("adress1", formData.adress1 || "");
     formDataToSend.append("adress2", formData.adress2 || "");
-    formDataToSend.append("Country", formData.country || "");
     formDataToSend.append("state", formData.state || "");
     formDataToSend.append("city", formData.city || "");
     formDataToSend.append("zip_code", formData.zip_code || "");
@@ -281,7 +278,6 @@ const Profile = () => {
             phone: userData.phone || "",
             adress1: userData.adress1 || "",
             adress2: userData.adress2 || "",
-            Country: userData.Country || "",
             state: userData.state || "",
             city: userData.city || "",
             zip_code: userData.zip_code || "",
@@ -403,66 +399,21 @@ const Profile = () => {
                 )}
               </Form.Group>
             </Col>
-            <LocationSelect
-              formData={formData}
-              handleInputChange={handleInputChange}
-              formErrors={formErrors}
-            />
             <Col md={6} lg={6} sm={12}>
-              <Form.Group className="mb-2">
-                <Form.Label>Zip Code</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter zip code"
-                  value={formData.zip_code}
-                  onChange={(e) =>
-                    handleInputChange("zip_code", e.target.value)
-                  }
-                  isInvalid={!!formErrors.zip_code}
-                  required
-                />
-                {formErrors.zip_code && (
-                  <Form.Text className="text-danger">
-                    {formErrors.zip_code}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={6} lg={6} sm={12}>
-              <Form.Group className="mb-2">
-                <Form.Label>LinkedIn URL</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter LinkedIn URL"
-                  value={formData.Linked_url}
-                  onChange={(e) =>
-                    handleInputChange("Linked_url", e.target.value)
-                  }
-                  isInvalid={!!formErrors.Linked_url}
-                  required
-                />
-                {formErrors.Linked_url && (
-                  <Form.Text className="text-danger">
-                    {formErrors.Linked_url}
-                  </Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-            {/* <Col md={6} lg={6} sm={12}>
               <Form.Group className="mb-2">
                 <Form.Label>Country</Form.Label>
                 <Form.Select
-                  value={formData.Country}
-                  onChange={(e) => handleInputChange("Country", e.target.value)}
-                  isInvalid={!!formErrors.Country}
+                  value={formData.country}
+                  onChange={(e) => handleInputChange("country", e.target.value)}
+                  isInvalid={!!formErrors.country}
                   required
                 >
-                  <option value="">Select Country</option>
+                  <option value="">Select country</option>
                  
                 </Form.Select>
-                {formErrors.Country && (
+                {formErrors.country && (
                   <Form.Text className="text-danger">
-                    {formErrors.Country}
+                    {formErrors.country}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -525,7 +476,7 @@ const Profile = () => {
                   </Form.Text>
                 )}
               </Form.Group>
-            </Col> */}
+            </Col>
           </Row>
 
           <Form.Group className="mb-4 mt-3">
@@ -568,23 +519,14 @@ const Profile = () => {
               const tenthYear = educations.find(
                 (e) => e.qualification === "10th"
               )?.year;
-              const startYear = 1989;
-              const endYear = new Date().getFullYear();
-
               const yearList = Array.from(
-                { length: endYear - startYear },
-                (_, i) => `${startYear + i}-${startYear + i + 1}`
+                { length: new Date().getFullYear() - 1989 },
+                (_, i) => 1990 + i
               );
-
               const filteredYears =
-                edu.qualification !== "10th" && tenthYear
-                  ? yearList.filter((y) => {
-                      const yearStart = parseInt(y.split("-")[0], 10); // start year from current option
-                      const tenthStart = parseInt(tenthYear.split("-")[0], 10); // start year from 10th selection
-                      return yearStart > tenthStart;
-                    })
+                edu.qualification === "12th" && tenthYear
+                  ? yearList.filter((y) => y > parseInt(tenthYear))
                   : yearList;
-
               const allQualifications = [
                 { value: "10th", label: "10th" },
                 { value: "12th", label: "12th" },
@@ -771,28 +713,15 @@ const Profile = () => {
                       value={edu.percentage}
                       required
                       placeholder="%"
-                      onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, ""); // keep only digits
-                        if (value === "") {
-                          handleEducationChange(index, "percentage", ""); // allow empty
-                          return;
-                        }
-                        let num = parseInt(value, 10);
-
-                        // Only allow numbers from 0 to 100
-                        if (num > 100) {
-                          num = 100;
-                        }
-
+                      onChange={(e) =>
                         handleEducationChange(
                           index,
                           "percentage",
-                          num.toString()
-                        );
-                      }}
+                          e.target.value
+                        )
+                      }
                     />
                   </Col>
-
                   <Col md={1}>
                     <Button
                       variant="danger"
@@ -922,10 +851,7 @@ const Profile = () => {
             />
             {formData.photo && (
               <img
-                src={`${BASE_URLL.replace(/\/$/, "")}/${formData.photo.replace(
-                  /^\//,
-                  ""
-                )}`}
+                src={`${BASE_URLL}${formData.photo}`}
                 alt="User Preview"
                 width="120"
                 height="120"

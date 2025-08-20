@@ -93,7 +93,7 @@ const AdminForgotPassword = () => {
           </Form.Group>
 
           <Form.Group className="mb-4">
-            <Form.Label>Confirm Password</Form.Label> <span class="text-danger">*</span>
+           <Form.Label>Confirm Password</Form.Label> <span class="text-danger">*</span>
             <Form.Control
               type="password"
               name="con_password"

@@ -537,7 +537,6 @@ a.nav-option.option1 {
 }
 
 span.nav-label {
-    padding-top: var(--awc-space-250);
     font-size: var(--awc-space-300);
     line-height: var(--awc-space-450);
     /* color: var(--awc-black); */

@@ -3,14 +3,24 @@ import { Form, Button, Card, Row, Container, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // ✅ for navigation
 import { verifyOTP, resendOTP } from "../../../api/auth";
 
-const UserOtp = () => {
+const UserVerifyOtp = () => {
   const [otp, setOtp] = useState("");
   const [countdown, setCountdown] = useState(60);
-  const [phone,] = useState(localStorage.getItem("phone") || "");
+  const [phone, setPhone] = useState("");
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const navigate = useNavigate(); //  hook for redirect
+  const navigate = useNavigate(); // ✅ hook for redirect
+
+  // ✅ Get phone number from localStorage on mount
+  useEffect(() => {
+   const storedPhone = JSON.parse(localStorage.getItem("userRegistrationData"))?.phone || "";
+
+    if (storedPhone) {
+      setPhone(storedPhone);
+    }
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -32,16 +42,13 @@ const UserOtp = () => {
 
     try {
       const data = await verifyOTP(phone, otp);
-      if (!data || !data.success) {
-        setError("Invalid OTP. Please try again.");
-        return;
-      }
+     
       setSuccess("OTP verified successfully!");
 
-      //  Redirect to forgot password page after 1.5s
-      setTimeout(() => {
-        navigate("/Forgotpassword");
-      }, 1500);
+      
+      
+        navigate("/Profile");
+      
     } catch (err) {
       console.error("OTP Error:", err);
       setError("Invalid OTP. Please try again.");
@@ -120,4 +127,4 @@ const UserOtp = () => {
   );
 };
 
-export default UserOtp;
+export default UserVerifyOtp;

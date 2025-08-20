@@ -4,7 +4,7 @@ import "../../../assets/css/AdminDashBoard.css";
 import "../../../assets/css/AdminInnerDashBoard.css";
 import Card from "react-bootstrap/Card";
 import { Row, Col, Button, Modal, Form } from "react-bootstrap";
-import { MdBarChart } from "react-icons/md";
+import { MdAddCircleOutline, MdBarChart } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiHome2Line } from "react-icons/ri";
 import axios from "axios";
@@ -120,19 +120,20 @@ const cards = [
                 <h1>Employee DashBoard</h1>
                 <div className="d-flex gap-3 emp-btn">
                   <Button
+                    className="post-btn"
+                    variant=""
+                    onClick={() => setShowJobModal(true)}
+                  >
+                  <MdAddCircleOutline />  Add New Post
+                  </Button>
+                  <Button
                     className="Jobs-btn"
                     variant=""
                     onClick={() => setShowAppliedJobModal(true)}
                   >
                     View Applied Jobs
                   </Button>
-                  <Button
-                    className="post-btn"
-                    variant=""
-                    onClick={() => setShowJobModal(true)}
-                  >
-                    Post Job
-                  </Button>
+                  
                 </div>
               </div>
 

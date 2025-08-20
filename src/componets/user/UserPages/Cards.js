@@ -23,10 +23,10 @@ const Cards = () => {
   ];
 
   return (
-    <div className="three-card-wrapper container py-5">
+    <div className="three-card-wrapper container">
       <Row className="g-4">
         {cards.map((card, idx) => (
-          <Col md={4} key={idx}>
+          <Col md={4} lg={4} sm={12} key={idx} className="groth-mobile">
             <Card className="card-custom text-center p-4">
               <div className="card-icon mb-3 text-primary">{card.icon}</div>
               <Card.Title>{card.title}</Card.Title>

@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row } from "react-bootstrap";
+import { Container, Alert, Spinner } from "react-bootstrap";
 import SavedJobCard from "./SavedJobCard";
 import { savedJobPostView, deleteSavedJobById } from "../../../api/auth";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 
 const SavedJobsList = () => {
   const [savedJobs, setSavedJobs] = useState([]);
-  const navigate=useNavigate();
-   const location=useLocation();
+  const [loading, setLoading] = useState(true);
+  const [alertMsg, setAlertMsg] = useState(null);
+
   useEffect(() => {
     const getSavedJobs = async () => {
-      const token = localStorage.getItem("token");
-      const jobs = await savedJobPostView(token);
-
-      setSavedJobs(jobs);
-      
+      try {
+        const token = localStorage.getItem("token");
+        const jobs = await savedJobPostView(token);
+        setSavedJobs(jobs || []);
+      } catch (error) {
+        console.error("Failed to fetch saved jobs", error);
+        setAlertMsg("Failed to load saved jobs.");
+      } finally {
+        setLoading(false);
+      }
     };
-
     getSavedJobs();
-  }, [location]);
+  }, []);
 
   const handleDelete = async (jobId) => {
     const token = localStorage.getItem("token");
-    console.log("Deleting job with ID:", jobId);
-
     try {
-      const response = await deleteSavedJobById(jobId, token);
-      console.log("Delete API response:", response);
-
+      await deleteSavedJobById(jobId, token);
       setSavedJobs((prevJobs) =>
-        prevJobs.filter((job) => job.job_id  !== jobId
-    )
+        prevJobs.filter((job) => job.job_id !== jobId)
       );
     } catch (error) {
       alert("Failed to delete job");
@@ -39,26 +37,24 @@ const SavedJobsList = () => {
     }
   };
 
-
-
-
   return (
-    <Container className="save-details">
-      {/* <div className="mb-4 text-center">
-        <h5 className="text-muted">Jobs saved by you</h5>
-        <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "0.2rem" }}>
-          {savedJobs.length.toString().padStart(2, "0")}
-        </h1>
-        <p className="text-muted">Saved Job(s)</p>
-      </div> */}
-      <Row>  {savedJobs.map((job) => (
-        <SavedJobCard key={job.job_id} job={job} onDelete={handleDelete} 
-        onViewDetails={() =>
-              navigate("/job-details", {
-                state: { job, handleDelete },  })
-            }/>
-      ))}</Row>
+    <Container className="edit-main">
+      <h4 className="mb-3 pt-3 text-center">Your Saved Jobs</h4>
 
+      {loading ? (
+        <div className="text-center mt-3 my-5">
+          <Spinner animation="border" />
+          <p>Loading saved jobs...</p>
+        </div>
+      ) : savedJobs.length === 0 ? (
+        <div className="text-center no-saved-job">You have no saved jobs.</div>
+      ) : (
+        savedJobs.map((job) => (
+          <SavedJobCard key={job.job_id} job={job} onDelete={handleDelete} />
+        ))
+      )}
+
+      {alertMsg && <Alert variant="danger">{alertMsg}</Alert>}
     </Container>
   );
 };

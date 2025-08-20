@@ -17,10 +17,10 @@ import { FaUserTie } from "react-icons/fa";
 import "../../../custom/Mainstyle.css";
 import AdminProfileDropdown from "./AdminProfileDropdown";
 function AdminDashBoard() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [isNavClosed, setIsNavClosed] = useState(false);
   const [expandedMenus, setExpandedItems] = useState({});
-  const adminName = localStorage.getItem("admin_first_name"); 
+  const adminName = localStorage.getItem("admin_first_name");
   const toggleNav = () => {
     setIsNavClosed(!isNavClosed);
   };
@@ -45,7 +45,6 @@ function AdminDashBoard() {
   };
   const navigationOptions = [
     { icon: <RxDashboard />, label: "Dashboard", path: "/AdmininnerDashBoard" },
-    
 
     {
       icon: <FaUserTie />,
@@ -57,42 +56,35 @@ function AdminDashBoard() {
       //     label: "All Profile",
       //     path: "/AllWorker",
       //   },
-      
-       
-       
+
       // ],
     },
-     {
+    {
       icon: <FaUserTie />,
       label: "Statistics ",
       path: "/Manday Worker Info",
     },
- 
+
     {
       icon: <FaUserTie />,
       label: "Job Approvals ",
       path: "/Manday Worker Info",
-      
     },
-     {
+    {
       icon: <FaUserTie />,
       label: "Users Report ",
       path: "/Manday Worker Info",
-      
     },
-     {
+    {
       icon: <FaUserTie />,
       label: "Assign Access ",
       path: "/Manday Worker Info",
-      
     },
-     {
+    {
       icon: <FaUserTie />,
       label: "Settings ",
       path: "/Manday Worker Info",
-      
     },
-    
   ];
 
   return (
@@ -106,7 +98,6 @@ function AdminDashBoard() {
             alt="menu-icon"
             onClick={toggleNav}
           />
-          
 
           <div className="awc-title">
             <span className="awc-subtitle">BrainRock</span>
@@ -114,9 +105,8 @@ function AdminDashBoard() {
         </div>
 
         <div className="message">
-     
-       <AdminProfileDropdown />
-    </div>
+          <AdminProfileDropdown />
+        </div>
       </header>
 
       <div className="cdpo-lhs-nav">
@@ -128,7 +118,7 @@ function AdminDashBoard() {
                   <div>
                     <FaAlignLeft className="icn menuicn" onClick={toggleNav} />
                   </div>
-                  
+
                   <div className="awc-user">CDPO login : Almora</div>
                   <div className="awc-log-icon-mob">
                     <LuLogOut className=" " title="Click to logout" />
@@ -146,7 +136,7 @@ function AdminDashBoard() {
                         className={`nav-option option${index + 1}`}
                       >
                         <div className="nav-item">
-                          <div className="d-flex">
+                          <div className="d-flex p-2">
                             <span className="nav-icon">{option.icon}</span>
                             <span className="nav-label">{option.label}</span>
                           </div>

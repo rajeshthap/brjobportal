@@ -18,3 +18,62 @@
 .search-pd{
   padding: 24px;
 }
+
+
+
+.modal-header  {
+    background-color: var(--awc-main-primary-blue);
+    color: var(--awc-white);
+    justify-content: space-between;
+}
+.custom-close-btn{
+  border: 1px solid;
+  background-color: var(--awc-white);
+  color: var(--awc-black);
+  border-radius: var(--awc-space-500);
+}
+.search-col{
+  text-align: center;
+
+}
+.brjp-search-btn{
+  background-color: var(--brjp-main-primary-blue) !important;
+    
+}
+.myappliedjob-top-heading{
+  margin-top:55px;
+  font-size: var(--awc-space-400);
+}
+
+.search-bm {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+.Search-label h1{
+  font-size: var(--awc-space-500);
+  color: var(--awc-main-primary-blue);
+  font-weight: 600;
+}
+.suggestion-dropdown {
+  top: 100%;
+
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  z-index: 1050;
+}
+.card-not-body{
+  padding: var(--awc-space-300);
+  text-align: center;
+}
+@media (max-width: 767px) {
+  .search-bm {
+    margin-bottom: 10px;
+  }
+
+  .brjp-search-btn {
+    width: 100%;
+  }
+}

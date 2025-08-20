@@ -3,9 +3,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 
 const AdminRegistration = () => {
   const navigate = useNavigate();
+  const [errorMessages, setErrorMessages] = useState({});
+
+  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     company_legal_name: "",
     first_name: "",
@@ -34,7 +39,7 @@ const AdminRegistration = () => {
     tax_registration_doc: null,
   });
 
-  // ✅ Handle file and text input changes
+  //  Handle file and text input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -50,8 +55,17 @@ const AdminRegistration = () => {
       }));
     }
   };
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await axios.post(`${BASE_URLL}/check-email/`, { email });
+      return response.data.exists; // your backend should return something like: { exists: true }
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false;
+    }
+  };
 
-  // ✅ Handle form submit
+  //  Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -111,10 +125,9 @@ const AdminRegistration = () => {
     if (formData.tax_registration_doc)
       payload.append("tax_registration_doc", formData.tax_registration_doc);
 
-
     try {
       const response = await axios.post(
-        "https://adminnanda.in/Job/api3/admin_registration/",
+        `${BASE_URLL}api3/admin_registration/`,
         payload,
         {
           headers: {
@@ -122,53 +135,39 @@ const AdminRegistration = () => {
           },
         }
       );
-      console.log("AdminRegistration", response.data)
+      console.log("AdminRegistration", response.data);
       //  const { first_name, last_name } = response.data.admin;
-
 
       // localStorage.setItem("admin_first_name", first_name);
       // localStorage.setItem("admin_last_name", last_name);
 
       alert("Registration successfully!");
-      //       const first_name = response.data.first_name;
-      //       const last_name = response.data.last_name;
-      // console.log("first name", first_name)
-      //       if (first_name || last_name) {
-      //         localStorage.setItem("first_name", first_name);
-      //         localStorage.setItem("last_name", last_name);
-      //       } else {
-      //         console.warn("Missing name data in API response", response.data);
-      //       }
+      //
       navigate("/ActivePlan");
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-      const errorMessage = error.response.data.error;
-
-      // Check for duplicate email error
-      if (errorMessage.includes("Duplicate entry") && errorMessage.includes("email")) {
-        alert("This email is already registered. Please use a different one.");
+    } catch (err) {
+      if (
+        err.response &&
+        err.response.data &&
+        err.response.data.error &&
+        err.response.data.error.includes("Duplicate entry")
+      ) {
+        setError("Email already exists. Please use a different email.");
       } else {
-        alert("Registration failed: " + errorMessage);
+        setError("Something went wrong. Please try again.");
       }
-    } else {
-      // General error
-      alert("Something went wrong. Please try again.");
-    }
-     
-     // console.error("Error submitting form:",error);
-      //alert("Registration failed. Please check all fields and try again.");
     }
   };
 
   return (
     <Container className="py-4 edit-main">
       <Card className="p-4 shadow-sm rounded-4">
-        <h4 className="mb-4 text-center"> Registration Form</h4>
+        <h4 className="mb-4 text-primary"> Registration Form</h4>
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Company Name</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Company Name</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="company_legal_name"
                   value={formData.company_legal_name}
@@ -180,7 +179,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label> First Name</Form.Label> <span class="text-danger">*</span>
+                <Form.Label> First Name</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="first_name"
                   value={formData.first_name}
@@ -191,7 +191,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label> Last Name</Form.Label> <span class="text-danger">*</span>
+                <Form.Label> Last Name</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="last_name"
                   value={formData.last_name}
@@ -202,7 +203,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label> Admin password</Form.Label> <span class="text-danger">*</span>
+                <Form.Label> Admin password</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   type="password"
                   name="admin_password"
@@ -214,7 +216,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Confirm admin password</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Confirm admin password</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   type="password"
                   name="con_pass"
@@ -227,20 +230,26 @@ const AdminRegistration = () => {
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Contact Number</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>
+                  Contact Number <span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="contact_number"
                   value={formData.contact_number}
                   onChange={handleChange}
-
+                  isInvalid={!!errorMessages.contact_number}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.contact_number}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={4} lg={4} sm={12}>
               <Form.Group className="mb-3">
-                <Form.Label>Passport/ID Number</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Passport/ID Number</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   type="input"
                   name="passport_or_id_number"
@@ -252,20 +261,27 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Email Address</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Email Address</Form.Label>{" "}
+                <span className="text-danger">*</span>
                 <Form.Control
                   type="email"
                   name="admin_email"
                   value={formData.admin_email}
                   onChange={handleChange}
+                  onBlur={checkEmailExists} // call function on blur
+                  isInvalid={!!error}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {error}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group>
-                <Form.Label>Title</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Title</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Select
                   name="title"
                   value={formData.title}
@@ -288,7 +304,8 @@ const AdminRegistration = () => {
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Company Size</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Company Size</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Select
                   name="company_size"
                   value={formData.company_size}
@@ -309,7 +326,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Business Type / Entity Type</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Business Type / Entity Type</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Select
                   name="business_type"
                   value={formData.business_type}
@@ -328,7 +346,8 @@ const AdminRegistration = () => {
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Industry / Sector</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Industry / Sector</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Select
                   name="industry"
                   value={formData.industry}
@@ -336,11 +355,41 @@ const AdminRegistration = () => {
                   required
                 >
                   <option value="">Select Industry</option>
+
                   <option value="agriculture">
                     Agriculture, Forestry & Fishing
                   </option>
                   <option value="mining">Mining & Quarrying</option>
                   <option value="manufacturing">Manufacturing</option>
+                  <option value="construction">Construction</option>
+                  <option value="wholesale">Wholesale Trade</option>
+                  <option value="retail">Retail Trade</option>
+                  <option value="transportation">
+                    Transportation & Warehousing
+                  </option>
+                  <option value="information">
+                    Information & Communications
+                  </option>
+                  <option value="finance">Finance & Insurance</option>
+                  <option value="real_estate">
+                    Real Estate & Rental Services
+                  </option>
+                  <option value="professional_services">
+                    Professional, Scientific & Technical Services
+                  </option>
+                  <option value="education">Education Services</option>
+                  <option value="healthcare">
+                    Healthcare & Social Assistance
+                  </option>
+                  <option value="arts_entertainment">
+                    Arts, Entertainment & Recreation
+                  </option>
+                  <option value="accommodation_food">
+                    Accommodation & Food Services
+                  </option>
+                  <option value="public_admin">Public Administration</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="nonprofit">Nonprofit Organizations</option>
                   <option value="other_services">
                     Other Services (Personal, Repair, etc.)
                   </option>
@@ -348,7 +397,8 @@ const AdminRegistration = () => {
               </Form.Group>
               {formData.industry === "other_services" && (
                 <Form.Group className="mb-3">
-                  <Form.Label>Please specify other service</Form.Label> <span class="text-danger">*</span>
+                  <Form.Label>Please specify other service</Form.Label>{" "}
+                  <span class="text-danger">*</span>
                   <Form.Control
                     type="text"
                     name="otherIndustry"
@@ -363,7 +413,8 @@ const AdminRegistration = () => {
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Company Registration Number</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Company Registration Number</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="company_registration_number"
                   value={formData.company_registration_number}
@@ -373,7 +424,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Tax ID / GST ID</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Tax ID / GST ID</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="tax_identification_number"
                   value={formData.tax_identification_number}
@@ -383,7 +435,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Business Description</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Business Description</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   as="textarea"
                   name="business_description"
@@ -394,13 +447,13 @@ const AdminRegistration = () => {
                 />
               </Form.Group>
             </Col>
-            <h5 className="mt-4 mb-3 text-primary">Company Location</h5>
+            <h5 className="mt-4 mb-3 text-primary label-font">
+              Company Location
+            </h5>
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>
-                  Country
-                </Form.Label>
+                <Form.Label>Country</Form.Label>
                 <Form.Control
                   name="country_of_incorporation"
                   value={formData.country_of_incorporation}
@@ -412,7 +465,8 @@ const AdminRegistration = () => {
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>State province region / Province</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>State province region / Province</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="state_province_region"
                   value={formData.state_province_region}
@@ -435,7 +489,8 @@ const AdminRegistration = () => {
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label> Address Line 1</Form.Label> <span class="text-danger">*</span>
+                <Form.Label> Address Line 1</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="business_address1"
                   value={formData.business_address1}
@@ -458,7 +513,8 @@ const AdminRegistration = () => {
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-4">
-                <Form.Label>Postal / ZIP Code</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Postal / ZIP Code</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   name="postal_zip_code"
                   value={formData.postal_zip_code}
@@ -468,11 +524,14 @@ const AdminRegistration = () => {
               </Form.Group>
             </Col>
 
-            <h5 className="mt-4 mb-3 text-primary">Compliance Documents</h5>
+            <h5 className="mt-4 mb-3 text-primary label-font">
+              Compliance Documents
+            </h5>
 
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Certificate of Incorporation (PDF/DOC)</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Certificate of Incorporation (PDF/DOC)</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   type="file"
                   name="certificate_of_incorporation_doc"
@@ -486,7 +545,7 @@ const AdminRegistration = () => {
               <Form.Group className="mb-3">
                 <Form.Label>
                   Proof of Address (Utility Bill, Lease Agreement)
-                </Form.Label> <span class="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   type="file"
                   name="proof_of_address_doc"
@@ -498,7 +557,8 @@ const AdminRegistration = () => {
             </Col>
             <Col md={4} lg={4} sm={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Tax Registration Document</Form.Label> <span class="text-danger">*</span>
+                <Form.Label>Tax Registration Document</Form.Label>{" "}
+                <span class="text-danger">*</span>
                 <Form.Control
                   type="file"
                   name="tax_registration_doc"

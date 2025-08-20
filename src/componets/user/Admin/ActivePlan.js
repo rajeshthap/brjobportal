@@ -14,27 +14,27 @@ const ActivePlan = ({ plan }) => {
     Number_of_employee: 3,
     Number_of_job_post: 5,
     plan_duratoin: "30 days",
-
+    
   });
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api3/Planregistration/",
-        formData
-      );
+ const handleSubmit = async () => {
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api3/Planregistration/",
+      formData
+    );
 
-      // ✅ Save returned admin_id to localStorage (if returned by backend)
+    // ✅ Save returned admin_id to localStorage (if returned by backend)
 
 
-      alert("Plan created successfully!");
-      localStorage.setItem("plan_admin_id", formData.admin);
-      navigate("/AdminLogin");
-    } catch (error) {
-      console.error("Error creating plan", error);
-      alert("Failed to create plan.");
-    }
-  };
+    alert("Plan created successfully!");
+       localStorage.setItem("plan_admin_id", formData.admin);
+    navigate("/AdminLogin");
+  } catch (error) {
+    console.error("Error creating plan", error);
+    alert("Failed to create plan.");
+  }
+};
 
   return (
     <div className="container p-sty edit-main">
@@ -75,11 +75,11 @@ const ActivePlan = ({ plan }) => {
             </div>
           </div>
         </div>
-        <div className="col-md-4 col-sm-6 d-flex">
+         <div className="col-md-4 col-sm-6 d-flex">
           <div className="pricingTable green card flex-fill">
-            <div className="pricingTable-header">
-              <i className="fa fa-briefcase"></i>
-              <div className="price-value">
+          <div className="pricingTable-header">
+            <i className="fa fa-briefcase"></i>
+          <div className="price-value">
                 {" "}
                 ₹14,999 <span class="month">$180 per month</span>{" "}
               </div>

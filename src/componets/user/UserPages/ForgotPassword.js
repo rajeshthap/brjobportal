@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/css/Forgetpassword.css";
+import { BASE_URLL } from "../../../api/AxiosBaseUrl";
+import { Container } from "react-bootstrap";
 
 // Helper functions to detect email or phone
 const isEmail = (value) => /\S+@\S+\.\S+/.test(value);
@@ -60,7 +62,7 @@ const ForgotPassword = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://adminnanda.in/Job/api/forgetpassword/", payload);
+      const response = await axios.post(`${BASE_URLL}api/forgetpassword/`, payload);
 
       setMessage(response.data.message || "Password reset successful.");
       setFormData({ identifier: "", password: "", confirm_password: "" });
@@ -76,7 +78,8 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="forgot-container ">
+    <Container className="mt-4">
+    <div className="forgot-container">
       <h2>Reset Password</h2>
       <form onSubmit={handleSubmit} className="forgot-form">
         <input
@@ -110,6 +113,7 @@ const ForgotPassword = () => {
         {errors && <p className="error">{errors}</p>}
       </form>
     </div>
+    </Container>
   );
 };
 

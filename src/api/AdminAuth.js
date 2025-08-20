@@ -11,7 +11,7 @@ export const getAdminById = async (adminId, token) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("admin details", response.data)
+   
     return response.data;
   } catch (error) {
     console.error('Error fetching admin data:', error);

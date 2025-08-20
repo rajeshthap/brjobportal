@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { Modal, Button, Form, Image } from "react-bootstrap";
 import axios from "axios";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
+import { MdOutlineCancel, MdUpdate } from "react-icons/md";
 
-const BASE_URL = "http://127.0.0.1:8000";
+
 
 const UserSetProfile = ({ show, onHide, userData, onUpdate }) => {
   const [formData, setFormData] = useState({
     name: userData?.full_name || "",
     email: userData?.email || "",
     phone: userData?.phone || "",
+    Gender: userData?.Gender || "",
+    Date_of_Birth: userData?.Date_of_Birth || "",
     photo: null,
     photoPreview: userData?.photo?.startsWith("http")
       ? userData.photo
-      : `${BASE_URL}${userData?.photo || ""}`,
+      : `${BASE_URLL}${userData?.photo || ""}`,
   });
 
   const handleChange = (e) => {
@@ -38,6 +41,8 @@ const UserSetProfile = ({ show, onHide, userData, onUpdate }) => {
     submitData.append("name", formData.name);
     submitData.append("email", formData.email);
     submitData.append("phone", formData.phone);
+    submitData.append("Gender", formData.Gender);
+    submitData.append("Date_of_Birth", formData.Date_of_Birth);
     if (formData.photo) {
       submitData.append("photo", formData.photo);
     }
@@ -72,7 +77,7 @@ if (!accessToken11) {
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Edit Basic Info</Modal.Title>
+        <Modal.Title className="text-center edit-heading"><h1>Edit Profile</h1></Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -106,6 +111,24 @@ if (!accessToken11) {
               required
             />
           </Form.Group>
+            <Form.Group className="mb-2">
+            <Form.Label>Gender</Form.Label>
+            <Form.Control
+              name="Gender"
+              value={formData.Gender}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
+            <Form.Group className="mb-2">
+            <Form.Label>Date of Birth</Form.Label>
+            <Form.Control type="date"
+              name="Date_of_Birth"
+              value={formData.Date_of_Birth}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
 
           <Form.Group className="mb-2">
             <Form.Label>Photo</Form.Label>
@@ -129,12 +152,16 @@ if (!accessToken11) {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+       
+       
+         <Button type="submit" variant="" className="px-4 edit-r-btn"onClick={handleSubmit}><MdUpdate className="icon-size" />
+                      Update Profile
+                    </Button>
+                    
+                     <Button variant="" onClick={onHide} className="px-4 close-btn-btn"><MdOutlineCancel className="icon-size"  />
           Cancel
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          Update Profile
-        </Button>
+       
       </Modal.Footer>
     </Modal>
   );

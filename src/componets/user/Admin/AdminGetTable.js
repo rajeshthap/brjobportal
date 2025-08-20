@@ -32,13 +32,13 @@ const AdminGetTable = () => {
           return;
         }
 
-        console.log(" Sending request to backend with admin ID:", storedAdminId);
+        
 
         const response = await axios.get("http://127.0.0.1:8000/api3/alldata/", {
           params: { admin: storedAdminId },
         });
 
-        console.log("✅ Data received from backend:", response.data);
+       
         setManagerData(response.data.managers || []);
         setLoading(false);
       } catch (error) {

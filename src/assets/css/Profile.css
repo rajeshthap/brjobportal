@@ -20,8 +20,9 @@
   font-weight: 600;
 }
 .educat-desin h5{
-  font-size: var(--brjp-space-300) !important;
+  font-size: var(--brjp-space-400) !important;
   font-weight: 600;
+
 }
 .education-add{
   font-size: var(--brjp-space-300);
@@ -42,4 +43,7 @@
 }
 .css-b62m3t-container{
   font-size: var(--brjp-space-300) !important;
+}
+.resume-title{
+  margin-top: 96px;
 }
