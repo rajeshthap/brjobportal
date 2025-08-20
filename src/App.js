@@ -19,6 +19,7 @@ import UserLogin from "./componets/user/UserPages/UserLogin";
 import Cards from "./componets/user/UserPages/Cards";
 import Footer from "./componets/user/footer/Footer";
 // import UserDashBoard from "./componets/user/leftnav/UserDashBoard";
+import UserDashboard from "./componets/user/leftnav/UserDashboard";
 import JobCard from "./componets/user/leftnav/JobCard";
 import PostJobCard from "./componets/user/leftnav/PostJobCard";
 import JobDetails from "./componets/user/leftnav/JobDetails";
@@ -115,7 +116,7 @@ const AppContent = () => {
         <Route path="/" element={<Home />} />
         <Route path="/UserLogin" element={<UserLogin />} />
         <Route path="/UserRegistration" element={<UserRegistration />} />
-        {/* <Route path="/UserDashBoard" element={<UserDashBoard />} /> */}
+        <Route path="/UserDashBoard" element={<UserDashboard />} />
         <Route path="/JobCard" element={<JobCard />} />
         <Route path="/PostJobCard/:job_id" element={<PostJobCard />} />
         <Route path="/SavedJobsList" element={<SavedJobsList />} />
