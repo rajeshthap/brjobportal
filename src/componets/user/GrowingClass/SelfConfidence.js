@@ -10,12 +10,15 @@ const SelfConfidence = () => {
       <div className="my-3 main-mt-0">
         <div className="training-wrapper p-4">
           <div className="text-center m-3 mobile-register">
-                  <Link to="/UserRegistration">
-                  <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
-                    Register Now
-                  </button>
-                  </Link>
-                </div>
+                   <Link
+                     to="/TrainingRegistration"
+                     
+                   >
+                     <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
+                       Register Now
+                     </button>
+                   </Link>
+                 </div>
           <Row>
             {/* Left Column (Accordion) */}
             <Col md={8} sm={12} className="mb-4">

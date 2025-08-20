@@ -389,7 +389,7 @@ const phoneRef = useRef(null);
           <Col md={7}>
             <h4 className="fw-bold">Registration</h4>
             <p className="text-muted mb-4">
-              Register now to explore personalized services.
+             Create your account now
             </p>
 
             {/* Full Name */}

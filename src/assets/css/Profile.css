@@ -36,6 +36,7 @@
 }
 .form-check-label{
   font-size: var(--brjp-space-300);
+  margin-top: var(--brjp-space-100);
 }
 .css-hlgwow{
   font-size: var(--brjp-space-300) !important;

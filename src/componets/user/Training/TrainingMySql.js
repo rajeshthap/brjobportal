@@ -7,13 +7,16 @@ const TrainingMySql = () => {
   return (
     <div className="main-contanier">
       <div className="my-3 main-mt-0">
-        <div className="text-center m-3 mobile-register">
-                          <Link to="/UserRegistration">
-                          <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
-                            Register Now
-                          </button>
-                          </Link>
-                        </div>
+    <div className="text-center m-3 mobile-register">
+             <Link
+               to="/TrainingRegistration"
+               
+             >
+               <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
+                 Register Now
+               </button>
+             </Link>
+           </div>
         <div className="training-wrapper p-4">
           <Row>
             {/* Left Column (Accordion) */}
