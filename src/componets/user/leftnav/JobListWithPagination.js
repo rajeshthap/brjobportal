@@ -57,27 +57,41 @@ const JobListWithPagination = ({ filteredJobs = [], renderJobCard }) => {
       )} */}
 
       {/* Job List */}
-      <Row ref={listRef}>
-        {loading ? (
-          <Col md={12} className="text-center py-4">
-            <Spinner animation="border" variant="primary" />
-          </Col>
-        ) : currentJobs.length > 0 ? (
-          currentJobs.map((job, index) => (
-            <Col md={12} key={index}>
-              {renderJobCard(job, index)}
-            </Col>
-          ))
-        ) : (
-          <Col md={12}>
-            <Card className="text-center p-4 shadow-sm">
-              <Card.Body>
-                <Card.Title>No jobs found</Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-        )}
-      </Row>
+   <Row ref={listRef}>
+  {loading ? (
+    <Col md={12}>
+      <Card className="text-center p-4 shadow-sm">
+        <Card.Body>
+          <Spinner animation="border" variant="primary" />
+          <Card.Text className="mt-2">Loading jobs...</Card.Text>
+        </Card.Body>
+      </Card>
+    </Col>
+  ) : currentJobs.length > 0 ? (
+    currentJobs.map((job, index) => (
+      <Col md={12} key={index}>
+        {renderJobCard(job, index)}
+      </Col>
+    ))
+  ) : (
+  <Col md={12}>
+  <Card className="text-center p-4 shadow-sm">
+    <Card.Body>
+      {loading ? (
+        <>
+          <Spinner animation="border" variant="primary" />
+          <Card.Text className="mt-2">Loading jobs...</Card.Text>
+        </>
+      ) : null}
+    </Card.Body>
+  </Card>
+</Col>
+
+
+
+  )}
+</Row>
+
 
       {/* Total Jobs Below List */}
       {!loading && currentJobs.length > 0 && (

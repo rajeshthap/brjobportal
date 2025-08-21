@@ -6,6 +6,8 @@ import JobLogo from "../../../assets/images/job-logo.png";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 
 function TrainingNavBar() {
+  const [loading, setLoading] = useState(true);
+
   const [expanded, setExpanded] = useState(false);
   const [userName, setUserName] = useState("");
   const [userPhoto, setUserPhoto] = useState("");
@@ -46,6 +48,9 @@ function TrainingNavBar() {
         } catch (error) {
           console.error("Failed to fetch user data:", error);
         }
+        finally {
+      setLoading(false); // always stop loading
+    }
       }
     };
 
@@ -59,6 +64,9 @@ function TrainingNavBar() {
 
   const handleLogout = () => {
     localStorage.clear();
+    localStorage.removeItem("usertype");
+// or localStorage.clear(); if you want to wipe everything
+
     alert("Logout successfully");
     navigate("/");
     setExpanded(false);
@@ -141,29 +149,35 @@ function TrainingNavBar() {
 
               {/* After Login */}
               {isLoggedIn && (
-                <NavDropdown className="d-flex "
-                  title={
-                    <span className=" align-items-center">
-                      <img
-                        src={userPhoto || "/default-profile.png"}
-                        alt="User"
-                        width="30"
-                        height="30"
-                        className="rounded-circle me-2"
-                      />
-                      {userName || "UserProfile"}
-                    </span>
-                  }
-                  id="user-profile-dropdown"
-                >
-                  {/* <NavDropdown.Item as={Link} to="/SavedJobsList" onClick={handleNavClick}>Saved Job</NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/MyAppliedJob" onClick={handleNavClick}>My Applied Job</NavDropdown.Item>
-     
-                  <NavDropdown.Item as={Link} to="/UserProfile" onClick={handleNavClick}>View Profile</NavDropdown.Item>
-           
-                  <NavDropdown.Item as={Link} to="/UserDashBoard" onClick={handleNavClick}>JobPortal</NavDropdown.Item> */}
-                  <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                </NavDropdown>
+                
+                <NavDropdown
+  className="d-flex"
+  title={
+    loading ? (
+      <span className="align-items-center">
+        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Loading...
+      </span>
+    ) : (
+      <span className="align-items-center">
+        <img
+          src={userPhoto || "/default-profile.png"}
+          alt="User"
+          width="30"
+          height="30"
+          className="rounded-circle me-2"
+        />
+        {userName || "UserProfile"}
+      </span>
+    )
+  }
+  id="user-profile-dropdown"
+>
+  {!loading && (
+    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+  )}
+</NavDropdown>
+
               )}
             </Nav>
           </Navbar.Collapse>

@@ -48,6 +48,7 @@ const UserLogin = () => {
     const data = await loginUser(payload);
       console.log("Login successful:", data);
     localStorage.setItem("user_id", data.user_id);
+    localStorage.setItem("usertype", data.role);
     localStorage.setItem("access_token1", data.access_token);
     localStorage.setItem("refresh_token1", data.refresh_token);
 

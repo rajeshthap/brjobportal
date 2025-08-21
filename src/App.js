@@ -110,18 +110,19 @@ const AppContent = () => {
     "/AssignAccess",
     "/Statistics"
   ]);
+  const userType = localStorage.getItem("usertype");
+  console.log("usertype",)
   const shouldHideNavbar = hiddenPaths.has(location.pathname);
-
 const RoleBasedNavbar = () => {
-  const userType = localStorage.getItem("userType");
-  if (userType === "trainee") return <TrainingNavBar />;
-  if (userType === "user") return <NavBar />;
-  return null; // no navbar if no user
-};
+    if (userType === "trainee") return <TrainingNavBar />;
+    if (userType === "user") return <NavBar />;
+    return <NavBar />; // default navbar for not logged-in users
+  };
+
   return (
     
     <>
-   {!shouldHideNavbar && <NavBar />}
+   
 
       {!shouldHideNavbar && <RoleBasedNavbar />}
       <Routes>
