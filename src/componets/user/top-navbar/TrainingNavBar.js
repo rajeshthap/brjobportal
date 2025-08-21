@@ -5,7 +5,7 @@ import axios from "axios";
 import JobLogo from "../../../assets/images/job-logo.png";
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 
-function NavBar() {
+function TrainingNavBar() {
   const [expanded, setExpanded] = useState(false);
   const [userName, setUserName] = useState("");
   const [userPhoto, setUserPhoto] = useState("");
@@ -156,12 +156,12 @@ function NavBar() {
                   }
                   id="user-profile-dropdown"
                 >
-                  <NavDropdown.Item as={Link} to="/SavedJobsList" onClick={handleNavClick}>Saved Job</NavDropdown.Item>
+                  {/* <NavDropdown.Item as={Link} to="/SavedJobsList" onClick={handleNavClick}>Saved Job</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/MyAppliedJob" onClick={handleNavClick}>My Applied Job</NavDropdown.Item>
      
                   <NavDropdown.Item as={Link} to="/UserProfile" onClick={handleNavClick}>View Profile</NavDropdown.Item>
            
-                  <NavDropdown.Item as={Link} to="/UserDashBoard" onClick={handleNavClick}>JobPortal</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/UserDashBoard" onClick={handleNavClick}>JobPortal</NavDropdown.Item> */}
                   <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                 </NavDropdown>
               )}
@@ -173,4 +173,4 @@ function NavBar() {
   );
 }
 
-export default NavBar;
+export default TrainingNavBar;

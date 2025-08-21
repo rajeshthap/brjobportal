@@ -732,4 +732,20 @@ a.nav-brnd.navbar-brand {
   .img-none-mobile {
     display: none;
   }
+  .saved-jobs-list{
+    padding: var(--awc-space-200) !important;
+  }
+  .mob-text-formeting{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--awc-space-300);
+    color: var(--awc-black);
+  }
+  .Qualification-option{
+    margin-bottom: var(--awc-space-200);
+  }
+  .label-title{
+  margin-top: var(--brjp-space-00);
+}
 }

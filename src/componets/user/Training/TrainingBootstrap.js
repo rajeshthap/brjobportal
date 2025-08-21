@@ -74,13 +74,13 @@ const TrainingBootstrap = () => {
                     <Accordion.Body>
                       <Card className="module-card">
                         <Card.Body>
-                          ✅ Introduction to CSS
+                           Introduction to CSS
                           <ul>
                             <li>What is CSS? </li>
                             <li>Inline, Internal, and External CSS </li>
                             <li>CSS Syntax (Selectors, Properties, Values)</li>
                           </ul>
-                          <br />✅ Selectors & Properties
+                          <br />Selectors & Properties
                           <ul>
                             <li>Element, ID, Class Selectors </li>
                             <li>

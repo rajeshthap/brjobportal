@@ -14,10 +14,12 @@ import "react-icons-kit";
 import "font-awesome/css/font-awesome.min.css";
 import "../src/custom/style.css";
 
+
 import UserRegistration from "./componets/user/UserPages/UserRegistration";
 import UserLogin from "./componets/user/UserPages/UserLogin";
 import Cards from "./componets/user/UserPages/Cards";
 import Footer from "./componets/user/footer/Footer";
+import UserTranningDashBoard from "./componets/TranningUser/DashBoard/UserTrainingDashBoard";
 // import UserDashBoard from "./componets/user/leftnav/UserDashBoard";
 import UserDashboard from "./componets/user/leftnav/UserDashboard";
 import JobCard from "./componets/user/leftnav/JobCard";
@@ -80,6 +82,7 @@ import JobListWithPagination from "./componets/user/leftnav/JobListWithPaginatio
 import AccessRefreshToken from "./componets/user/Employee/AccessRefreshToken";
 import Success from "./api/Success";
 import TrainingVerifyOtp from "./componets/user/Training/TeaningVerifyOtp";
+import TrainingNavBar from "./componets/user/top-navbar/TrainingNavBar";
 function App() {
   return (
     <Router>
@@ -109,9 +112,18 @@ const AppContent = () => {
   ]);
   const shouldHideNavbar = hiddenPaths.has(location.pathname);
 
+const RoleBasedNavbar = () => {
+  const userType = localStorage.getItem("userType");
+  if (userType === "trainee") return <TrainingNavBar />;
+  if (userType === "user") return <NavBar />;
+  return null; // no navbar if no user
+};
   return (
+    
     <>
-      {!shouldHideNavbar && <NavBar />}
+   {!shouldHideNavbar && <NavBar />}
+
+      {!shouldHideNavbar && <RoleBasedNavbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/UserLogin" element={<UserLogin />} />
@@ -177,6 +189,7 @@ const AppContent = () => {
         <Route path="/Success" element={<Success />} />
         <Route path="/AccessRefreshToken" element={<AccessRefreshToken />} />
         <Route path="/TrainingVerifyOtp" element={<TrainingVerifyOtp />} />
+        <Route path="/UserTranningDashBoard" element={<UserTranningDashBoard />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -271,7 +271,7 @@ const phoneRef = useRef(null);
         }
       }
 
-      const response = await registerUser(submission);
+      const response = await registerUser(submission,"registration");
       
       const userId = response?.id || response?.user?.id;
       if (!userId) throw new Error("User ID not returned");

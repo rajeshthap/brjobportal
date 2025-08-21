@@ -22,59 +22,57 @@ const UserLogin = () => {
   const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   const isPhone = (value) => /^\d{10}$/.test(value);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors("");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrors("");
 
-    const { identifier, password } = formData;
+  const { identifier, password } = formData;
 
-    if (!identifier || !password) {
-      setErrors("All fields are required.");
-      return;
-    }
+  if (!identifier || !password) {
+    setErrors("All fields are required.");
+    return;
+  }
 
-    let payload = { password };
+  let payload = { password };
 
-    if (isPhone(identifier)) {
-      payload.phone = identifier;
-    } else if (isEmail(identifier)) {
-      payload.email = identifier;
+  if (isPhone(identifier)) {
+    payload.phone = identifier;
+  } else if (isEmail(identifier)) {
+    payload.email = identifier;
+  } else {
+    setErrors("Please enter a valid email.");
+    return;
+  }
+
+  try {
+    const data = await loginUser(payload);
+      console.log("Login successful:", data);
+    localStorage.setItem("user_id", data.user_id);
+    localStorage.setItem("access_token1", data.access_token);
+    localStorage.setItem("refresh_token1", data.refresh_token);
+
+ 
+    if (data.role === "trainee") {
+      navigate("/UserTrainingDashBoard");
     } else {
-      setErrors("Please enter a valid email .");
-      return;
+      navigate("/UserDashBoard");
     }
 
-    try {
-      const data = await loginUser(payload);
-      
-
-      localStorage.setItem("user_id", data.user_id);
-
-      localStorage.setItem("access_token1", data.access_token);
-      localStorage.setItem("refresh_token1", data.refresh_token);
-      // const hasSearched = localStorage.getItem("job_title") === "true";
-
-      navigate("/UserDashBoard"); // or your actual LeftNav route path
-     
-      // Optional: store in localStorage or cookies
-    } catch (err) {
-      if (err.response) {
-        // Server responded with a status outside 2xx
-        console.error(" Server Response Error:");
-        console.error("Status:", err.response.status);
-        console.error("Headers:", err.response.headers);
-        console.error("Data:", err.response.data);
-        setErrors(err.response.data.detail || "Invalid login credentials.");
-      } else {
-        // Something went wrong setting up the request
-        console.error(" Error Setting Up Request:");
-        console.error("Message:", err.message);
-        setErrors("Something went wrong. Please try again.");
-      }
-
-      console.error(" Config:", err.config);
+  } catch (err) {
+    if (err.response) {
+      console.error(" Server Response Error:");
+      console.error("Status:", err.response.status);
+      console.error("Data:", err.response.data);
+      setErrors(err.response.data.detail || "Invalid login credentials.");
+    } else {
+      console.error(" Error Setting Up Request:", err.message);
+      setErrors("Something went wrong. Please try again.");
     }
-  };
+  }
+};
+
+
+
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
@@ -163,12 +161,19 @@ const UserLogin = () => {
         <div className="divider">
           <span>Or</span>
         </div>
-
+<div className="text-center mb-3">
+      <p >
+         BR jobs only
+      </p>
+     
+    </div>
         <div className="d-flex justify-content-center mt-2">
-          <GoogleLogin
+          
+          <GoogleLogin 
             onSuccess={handleGoogleLogin}
             onError={() => alert("Google login failed")}
           />
+          
         </div>
       </Form>
     </div>

@@ -237,7 +237,7 @@ const [selectedFilters, setSelectedFilters] = useState({
     if (!userId || !job) {
       setAlertMsg("User not logged in or job details missing.");
       setAlertVariant("danger");
-      setTimeout(() => setAlertMsg(null), 2000);
+      // setTimeout(() => setAlertMsg(null), 2000);
       return;
     }
 
@@ -245,7 +245,7 @@ const [selectedFilters, setSelectedFilters] = useState({
     if (savedJobs.includes(jobUniqueId)) {
       setAlertMsg("This job has already been saved.");
       setAlertVariant("warning");
-      setTimeout(() => setAlertMsg(null), 6000);
+      // setTimeout(() => setAlertMsg(null), 6000);
       return;
     }
 
@@ -290,7 +290,7 @@ const [selectedFilters, setSelectedFilters] = useState({
       alert("All Ready Saved.");
       setAlertVariant("danger");
     }
-    setTimeout(() => setAlertMsg(null), 8000);
+    // setTimeout(() => setAlertMsg(null), 8000);
   };
 
   const renderJobCard = (job, index) => {
@@ -351,9 +351,9 @@ const [selectedFilters, setSelectedFilters] = useState({
       </Card>
     );
   };
-  setTimeout(() => {
-    setAlertMsg(null);
-  }, 2000);
+  // setTimeout(() => {
+  //   setAlertMsg(null);
+  // }, 2000);
   return (
     <Container fluid>
       <Form
@@ -363,12 +363,12 @@ const [selectedFilters, setSelectedFilters] = useState({
           if (isMobile()) {
             const { title, location, experience } = searchFields;
             if (!title || !location || !experience) {
-              setAlertMsg("Please fill in all search fields.");
+              alert("Please fill in all search fields.");
               setAlertVariant("danger");
 
               setTimeout(() => {
                 setAlertMsg(null);
-              }, 2000);
+              }, 300000);
 
               return;
             }
@@ -531,16 +531,24 @@ const [selectedFilters, setSelectedFilters] = useState({
               </Button>
             </Modal.Header>
             <Modal.Body>
-            {filteredJobs.length === 0 ? (
-  <Card className="text-center p-4 shadow-sm">
-    <Card.Body>
-      <Card.Title>No jobs found</Card.Title>
-      
-    </Card.Body>
-  </Card>
-) : (
-  filteredJobs.map(renderJobCard)
-)}
+      {loading ? (
+      <Card className="text-center p-4 shadow-sm">
+        <Card.Body>
+          <Card.Title>Loading jobs...</Card.Title>
+          <Spinner animation="border" variant="primary" className="mt-2" />
+        </Card.Body>
+      </Card>
+    ) 
+    // : filteredJobs.length === 0 ? (
+    //   <Card className="text-center p-4 shadow-sm">
+    //     <Card.Body>
+    //       <Card.Title>No jobs found</Card.Title>
+    //     </Card.Body>
+    //   </Card>
+    // ) 
+    : (
+      filteredJobs.map(renderJobCard)
+    )}
 
             </Modal.Body>
           </Modal>

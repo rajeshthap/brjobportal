@@ -25,8 +25,6 @@ import {
 import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 import AccessRefreshToken from "../Employee/AccessRefreshToken";
 
-
-
 const JobDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -101,7 +99,7 @@ const JobDetails = () => {
       const formData = new FormData();
 
       if (!resumeData?.generated_pdf) {
-        throw new Error("Resume path is missing.");
+        throw new Error("Resume not Found");
       }
 
      const resumeURL = resumeData.generated_pdf.includes("http")

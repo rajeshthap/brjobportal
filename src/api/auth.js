@@ -4,12 +4,37 @@ import { BASE_URLL } from "../../src/api/AxiosBaseUrl";
 // import { useNavigate } from "react-router-dom";
 import AccessRefreshToken from "../componets/user/Employee/AccessRefreshToken";
 
+export const sendOtp = async (phone) => {
+  try {
+    const response = await axios.post(`${BASE_URLL}api/Send-otp/`, { phone });
+    return response.data; // Return the server response if needed
+  } catch (error) {
+    // Throw the error to be handled in the component
+    throw error.response?.data || error;
+  }
 
+
+};
 // Register API
 export const registerUser = async (formData) => {
   try {
     const response = await axios.post(
       `${BASE_URLL}api/UserRegistration/`,
+      formData
+      
+    );
+
+    return response.data;
+  
+  } catch (error) {
+    throw error.response?.data || { detail: "Registration failed" };
+  }
+};
+
+export const registerUserT = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URLL}api4/training_user_create/`,
       formData
       
     );

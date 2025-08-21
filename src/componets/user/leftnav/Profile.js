@@ -394,7 +394,7 @@ const Profile = () => {
                   value={formData.adress2}
                   onChange={(e) => handleInputChange("adress2", e.target.value)}
                   isInvalid={!!formErrors.adress2}
-                  required
+                 
                 />
                 {formErrors.adress2 && (
                   <Form.Text className="text-danger">
@@ -408,7 +408,7 @@ const Profile = () => {
               handleInputChange={handleInputChange}
               formErrors={formErrors}
             />
-            <Col md={6} lg={6} sm={12}>
+            <Col md={6} lg={6} sm={12} className="mt-2">
               <Form.Group className="mb-2">
                 <Form.Label>Zip Code</Form.Label>
                 <Form.Control
@@ -428,7 +428,7 @@ const Profile = () => {
                 )}
               </Form.Group>
             </Col>
-            <Col md={6} lg={6} sm={12}>
+            <Col md={6} lg={6} sm={12} className="mt-2">
               <Form.Group className="mb-2">
                 <Form.Label>LinkedIn URL</Form.Label>
                 <Form.Control
@@ -610,7 +610,7 @@ const Profile = () => {
 
               return (
                 <Row key={index} className="mb-2">
-                  <Col md={2}>
+                  <Col md={2} className="Qualification-option">
                     <Form.Select
                       value={edu.qualification}
                       onChange={(e) =>
@@ -874,7 +874,7 @@ const Profile = () => {
                         );
                       } else {
                         return (
-                          <div className="text-muted mt-2">
+                          <div className="text-muted text-mute-style mt-2">
                             Please complete at least one qualification (e.g.,
                             10th, 12th, etc.) above to select distance learning
                             courses.
@@ -905,7 +905,7 @@ const Profile = () => {
           </Row>
 
           <Form.Group className="mob-resume-create mb-2">
-            <Form.Label>Hobbies</Form.Label>
+            <Form.Label className="label-title">Hobbies</Form.Label>
             <Form.Control
               type="text"
               placeholder="Reading, Cricket, etc."

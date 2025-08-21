@@ -54,7 +54,7 @@ function SendOtp() {
           <h4 className="text-center mt-3">Forgot Password</h4>
           <Form onSubmit={handleSubmit} className="p-4 shadow rounded bg-light">
             <Form.Group className="mb-3">
-              <Form.Label>Phone</Form.Label>
+              <Form.Label>User Phone Number</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter the 10 digit number"

@@ -83,7 +83,7 @@ const JobListWithPagination = ({ filteredJobs = [], renderJobCard }) => {
       {!loading && currentJobs.length > 0 && (
         <Row>
         <div className="pagingnation-container">
-          <div>
+          <div className="mob-text-formeting">
             Showing {indexOfFirstJob + 1} -{" "}
             {Math.min(indexOfLastJob, filteredJobs.length)} of{" "}
             {filteredJobs.length} jobs

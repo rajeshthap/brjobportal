@@ -38,6 +38,7 @@ const SavedJobsList = () => {
   };
 
   return (
+    <div className="saved-jobs-list">
     <Container className="edit-main">
       <h4 className="mb-3 pt-3 text-center">Your Saved Jobs</h4>
 
@@ -56,6 +57,7 @@ const SavedJobsList = () => {
 
       {alertMsg && <Alert variant="danger">{alertMsg}</Alert>}
     </Container>
+    </div>
   );
 };
 
