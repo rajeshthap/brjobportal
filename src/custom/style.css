@@ -475,6 +475,9 @@ button.nd-primary-btn.btn.btn-secondary {
 .edit-main-heading{
   margin-top: 96px;
 }
+.img-ml{
+  margin-left: var(--awc-space-200);
+}
 @media (min-width: 992px) {
   .mob-saved-job-btn {
     display: none !important;

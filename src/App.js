@@ -83,6 +83,21 @@ import AccessRefreshToken from "./componets/user/Employee/AccessRefreshToken";
 import Success from "./api/Success";
 import TrainingVerifyOtp from "./componets/user/Training/TeaningVerifyOtp";
 import TrainingNavBar from "./componets/user/top-navbar/TrainingNavBar";
+import Python from "./componets/TranningUser/DashBoard/Python";
+import PHP from "./componets/TranningUser/DashBoard/PHP";
+import ReactTraining from "./componets/TranningUser/DashBoard/ReactTraining";
+import Bootstrap from "./componets/TranningUser/DashBoard/Bootstrap";
+import WebDesign from "./componets/TranningUser/DashBoard/WebDesign";
+import UXTraining from "./componets/TranningUser/DashBoard/UXTraining";
+import MYSql from "./componets/TranningUser/DashBoard/MYSql";
+import CommunicationTraining from "./componets/TranningUser/DashBoard/CommunicationTraining";
+import InterView from "./componets/TranningUser/DashBoard/InterView";
+import Confidance from "./componets/TranningUser/DashBoard/Confidance";
+import PublicSpeakingTraining from "./componets/TranningUser/DashBoard/PublicSpeakingTraining";
+import VideoTraining from "./componets/TranningUser/DashBoard/VideoTraining";
+import PDFTraining from "./componets/TranningUser/DashBoard/PDFTraining";
+import LiveTraining from "./componets/TranningUser/DashBoard/LiveTraining";
+import UpcomingEvent from "./componets/TranningUser/DashBoard/UpcomingEvent";
 function App() {
   return (
     <Router>
@@ -114,7 +129,7 @@ const AppContent = () => {
   console.log("usertype",)
   const shouldHideNavbar = hiddenPaths.has(location.pathname);
 const RoleBasedNavbar = () => {
-    if (userType === "trainee") return <TrainingNavBar />;
+    if (userType === "trainee") return <TrainingNavBar/>;
     if (userType === "user") return <NavBar />;
     return <NavBar />; // default navbar for not logged-in users
   };
@@ -191,6 +206,24 @@ const RoleBasedNavbar = () => {
         <Route path="/AccessRefreshToken" element={<AccessRefreshToken />} />
         <Route path="/TrainingVerifyOtp" element={<TrainingVerifyOtp />} />
         <Route path="/UserTrainingDashBoard" element={<UserTrainingDashBoard />} />
+        <Route path="/Python" element={<Python />} />
+        <Route path="/PHP" element={<PHP/>} />
+        <Route path="/ReactTraining" element={<ReactTraining />} />
+        <Route path="/Bootstrap" element={<Bootstrap />} />
+        <Route path="/WebDesign" element={<WebDesign />} />
+        <Route path="/UXTraining" element={<UXTraining />} />
+        <Route path="/MYSql" element={<MYSql />} />
+        <Route path="/CommunicationTraining" element={<CommunicationTraining />} />
+        <Route path="/InterView" element={<InterView />} />
+        <Route path="/Confidance" element={<Confidance/>} />
+        <Route path="/PublicSpeakingTraining" element={<PublicSpeakingTraining/>} />
+        <Route path="/VideoTraining" element={<VideoTraining/>} />
+        <Route path="/PDFTraining" element={<PDFTraining/>} />
+        <Route path="/LiveTraining" element={<LiveTraining/>} />
+        <Route path="/UpcomingEvent" element={<UpcomingEvent/>} />
+
+        
+        
        
 
         <Route path="*" element={<NotFound />} />

@@ -85,10 +85,118 @@ function TrainingNavBar({ isRHSClosed, toggleRHSNav }) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto nav-list gap-4 justify-content-end flex-grow-1 d-flex nav-down">
-            <Nav.Link as={Link} to="/GroomingClass" onClick={handleNavClick}>Grooming Class</Nav.Link>
-            <Nav.Link as={Link} to="/Training" onClick={handleNavClick}>Training</Nav.Link>
-            <Nav.Link as={Link} to="/StudyMaterial" onClick={handleNavClick}>Study Material</Nav.Link>
-            <Nav.Link as={Link} to="/Event" onClick={handleNavClick}>Event</Nav.Link>
+             <NavDropdown title="Training" id="training-dropdown">
+      <NavDropdown.Item as={Link} to="/ReactTraining" onClick={handleNavClick}>
+        React Training
+      </NavDropdown.Item>
+       <NavDropdown.Item as={Link} to="/Python" onClick={handleNavClick}>
+        Python
+      </NavDropdown.Item>
+      
+     
+                     <NavDropdown.Item
+                       as={Link}
+                       to="/PHP"
+                       onClick={handleNavClick}
+                     >
+                       PHP
+                     </NavDropdown.Item>
+                     <NavDropdown.Item
+                       as={Link}
+                       to="/MYSql"
+                       onClick={handleNavClick}
+                     >
+                       MySQL
+                     </NavDropdown.Item>
+                     <NavDropdown.Item
+                       as={Link}
+                       to="/Bootstrap"
+                       onClick={handleNavClick}
+                     >
+                       HTML/CSS/Bootstrap
+                     </NavDropdown.Item>
+                     <NavDropdown.Item
+                       as={Link}
+                       to="/WebDesign"
+                       onClick={handleNavClick}
+                     >
+                       Web Development
+                     </NavDropdown.Item>
+                     <NavDropdown.Item
+                       as={Link}
+                       to="/UXTraining"
+                       onClick={handleNavClick}
+                     >
+                       UI/UX Designer
+                     </NavDropdown.Item>
+    </NavDropdown>
+
+    <NavDropdown title="Grooming Class" id="grooming-dropdown">
+                    <NavDropdown.Item
+                      as={Link}
+                      to="/CommunicationTraining"
+                      onClick={handleNavClick}
+                    >
+                      Communication Skills
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      as={Link}
+                      to="/Confidance"
+                      onClick={handleNavClick}
+                    >
+                      Self-Confidence & Power Dressing
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      as={Link}
+                      to="/InterView"
+                      onClick={handleNavClick}
+                    >
+                      Interview Skills
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      as={Link}
+                      to="/PublicSpeakingTraining"
+                      onClick={handleNavClick}
+                    >
+                      Public Speaking
+                    </NavDropdown.Item>
+                  </NavDropdown>
+      
+                    {/* Study Material */}
+                    <NavDropdown title="Study Material" id="study-material-dropdown">
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/PDFTraining"
+                        onClick={handleNavClick}
+                      >
+                        PDF Tutorial
+                      </NavDropdown.Item>
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/UXTraining"
+                        onClick={handleNavClick}
+                      >
+                        Video Tutorial
+                      </NavDropdown.Item>
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/LiveTraining"
+                        onClick={handleNavClick}
+                      >
+                        Live Class
+                      </NavDropdown.Item>
+                    </NavDropdown>
+      
+                    {/* Events */}
+                    <NavDropdown title="Event" id="event-dropdown">
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/UpcomingEvent"
+                        onClick={handleNavClick}
+                      >
+                        Upcoming Events
+                      </NavDropdown.Item>
+                    </NavDropdown>
 
             {!isLoggedIn && (
               <>
@@ -113,8 +221,9 @@ function TrainingNavBar({ isRHSClosed, toggleRHSNav }) {
                     </span>
                   ) : (
                     <span className="align-items-center">
-                      <img src={userPhoto || "/default-profile.png"} alt="User" width="30" height="30" className="rounded-circle me-2" />
+                     
                       {userName || "UserProfile"}
+                       <img src={userPhoto || "/default-profile.png"} alt="User" width="30" height="30" className="rounded-circle img-ml me-2" />
                     </span>
                   )
                 }
@@ -125,9 +234,7 @@ function TrainingNavBar({ isRHSClosed, toggleRHSNav }) {
             )}
 
             {/* Toggle RHS Nav button */}
-         <Nav.Link onClick={toggleRHSNav} className="btn btn-outline-secondary ms-3">
-  <FaBars size={20} />
-</Nav.Link>
+       
 
 
           </Nav>

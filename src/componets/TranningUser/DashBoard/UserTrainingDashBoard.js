@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import RHSNav from "./RHSNav";
 import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import "../../../assets/css/RHSNav.css"
 
 const UserTrainingDashBoard = () => {
@@ -14,15 +14,22 @@ const UserTrainingDashBoard = () => {
       {/* Main Content */}
       <div className="main-content flex-grow-1">
         <TrainingNavBar isRHSClosed={isRHSClosed} toggleRHSNav={toggleRHSNav} />
-       <div className="dashboard-box p-3">
-  <h4>Dashboard Content Here</h4>
-  <p>Some additional content can go here.</p>
+        <Row className="d-flex justify-content-end">
+          <Col lg={10} sm={12} md={10}>
+               <div className="dashboard-box p-3">
+  <h4>Dashboard Content Python</h4>
+  <p></p>
 </div>
+          </Col>
+          <Col lg={2} sm={2} md={12}>
+         <RHSNav />
+          </Col>
+        </Row>
+  
 
       </div>
 
-      {/* RHS Navigation */}
-      <RHSNav isNavClosedProp={isRHSClosed} toggleNavProp={toggleRHSNav} />
+    
     </div>
   );
 };

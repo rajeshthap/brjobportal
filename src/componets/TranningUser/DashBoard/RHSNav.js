@@ -10,19 +10,40 @@ import { LuLogOut } from "react-icons/lu";
 import { FaFileCircleCheck } from "react-icons/fa6";
 import "../../../assets/css/RHSNav.css"
 import "../../../custom/Mainstyle.css";
-
+import { FaPython } from "react-icons/fa";
+import { MdOutlinePhp } from "react-icons/md";
+import { RiReactjsFill } from "react-icons/ri";
+import { BsBootstrap } from "react-icons/bs";
+import { PiFileSqlFill } from "react-icons/pi";
+import { PiUsersFourFill } from "react-icons/pi";
+import { TbUsersGroup } from "react-icons/tb";
+import { LiaLaptopCodeSolid } from "react-icons/lia";
+import { CgWebsite } from "react-icons/cg";
+import { MdSelfImprovement } from "react-icons/md";
+import { RiFileVideoLine } from "react-icons/ri";
+import { RiNewsLine } from "react-icons/ri";
+import { ImFilePdf } from "react-icons/im";
+import { MdEmojiEvents } from "react-icons/md";
 
 function RHSNav({ isNavClosedProp, toggleNavProp }) {
   const navigate = useNavigate();
 
   const navigationOptions = [
-    { icon: <RxDashboard />, label: "Dashboard", path: "/EmployeeDashBoard" },
-    { icon: <FaFileAlt />, label: "Application", path: "/EmployeeDashBoard" },
-    { icon: <HiOutlinePresentationChartLine />, label: "Statistics", path: "/Statistics" },
-    { icon: <FaFileCircleCheck />, label: "Job Approvals", path: "/JobApprovals" },
-    { icon: <HiOutlineDocumentReport />, label: "Users Report", path: "/UsersReport" },
-    { icon: <MdOutlineAssignmentInd />, label: "Assign Access", path: "/AssignAccess" },
-    { icon: <IoMdSettings />, label: "Settings", path: "/Settings" },
+    // { icon: <RxDashboard />, label: "Dashboard", path: "/EmployeeDashBoard" },
+    { icon: <FaPython />, label: "Python", path: "/Python" },
+    { icon: <MdOutlinePhp />, label: "PHP", path: "/PHP" },
+    { icon: <RiReactjsFill />, label: "React", path: "/ReactTraining" },
+    { icon: <BsBootstrap />, label: "HTML/CSS/Bootsrap", path: "/Bootstrap" },
+    { icon: <LiaLaptopCodeSolid />, label: "Web Desgin", path: "/WebDesign" },
+    { icon: <CgWebsite />, label: "UI/UX Tranning", path: "/UXTraining" },
+    { icon: <PiFileSqlFill />, label: "My SQL", path: "/MYSql" },
+    { icon: <PiUsersFourFill />, label: "Communication", path: "/CommunicationTraining" },
+    { icon: <TbUsersGroup />, label: "InterviewSkills", path: "/InterView" },
+    { icon: <MdSelfImprovement />, label: "Self Confidance", path: "/Confidance" },
+   { icon: <RiFileVideoLine />, label: "Video Tutorial", path: "/VideoTraining" },
+   { icon: <RiNewsLine />, label: "Live Tutorial", path: "/LiveTraining" },
+   { icon: <ImFilePdf />, label: "PDF Tutorial", path: "/PDFTraining" },
+   { icon: <MdEmojiEvents />, label: "Upcomming Event", path: "/UpcomingEvent" },
   ];
 
   const handleLogout = () => {
@@ -33,9 +54,9 @@ function RHSNav({ isNavClosedProp, toggleNavProp }) {
 
   return (
     <div className={`cdpo-lhs-nav ${isNavClosedProp ? "nav-closed" : ""}`}>
-      <div className="navcontainer">
-        <nav className="nav">
-          <div className="nav-upper-options">
+      <div className="navcontainert">
+        <nav className="navt">
+          <div className="nav-upper-options-t">
             <div className="awc-menu d-flex justify-content-between align-items-center">
               {/* Toggle icon */}
               <FaAlignLeft className="icn menuicn" onClick={toggleNavProp} style={{ cursor: "pointer" }} />
@@ -46,8 +67,8 @@ function RHSNav({ isNavClosedProp, toggleNavProp }) {
             {navigationOptions.map((option, idx) => (
               <Link key={idx} to={option.path} className="nav-option">
                 <div className="nav-item d-flex align-items-center">
-                  <span className="nav-icon me-2">{option.icon}</span>
-                  <span className="nav-label">{option.label}</span>
+                  <span className="nav-icon-t me-2">{option.icon}</span>
+                  <span className="nav-label-t">{option.label}</span>
                 </div>
               </Link>
             ))}

@@ -1,0 +1,27 @@
+.training-wrapper-py {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    border-radius: 8px 8px 0px 0px;
+    /* margin-top: 96px !important; */
+}
+.main-content-details-data {
+    flex-grow: 1;
+    padding: 30px 10px 30px 30px;
+    background-color: #f9f9f9;
+
+}
+
+@media (max-width: 576px) {
+    .main-content-details-data{
+
+   padding: 0px !important;
+    
+    }
+    .main-content-details{
+        margin-top: var(--awc-space-500);
+    }
+    .dashboard-box{
+        margin: 55px 0px 0px 0px !important;
+    }
+}
