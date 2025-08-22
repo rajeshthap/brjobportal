@@ -27,6 +27,24 @@ body {
     overflow-x: hidden;
 }
 
+.dashboard-box {
+  background-color: #fff;        /* White background */
+  border-radius: 10px;           /* Rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow */
+  padding: 10px 10px 10px;                 /* Inner spacing */
+  margin: 10px 10px 10px 10px; 
+  margin-top: 55px;               /* Outer spacing */
+  transition: transform 0.2s, box-shadow 0.2s; /* Hover effect */
+}
+
+.dashboard-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+
+
 .awc-title {
     color: var(--awc-white);
     margin-left: 12px;
@@ -76,6 +94,7 @@ a.nav-sub-option:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: #ededed;
 }
 
 .home-list-item {

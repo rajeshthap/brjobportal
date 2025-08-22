@@ -1,29 +1,29 @@
-import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-// import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
-// import InnerDashBoard from "./InnerDashBoard";
-// import RHSNav from "./RHSNav";
+import React, { useState } from "react";
+import RHSNav from "./RHSNav";
+import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
+import { Container } from "react-bootstrap";
+import "../../../assets/css/RHSNav.css"
 
 const UserTrainingDashBoard = () => {
+  const [isRHSClosed, setIsRHSClosed] = useState(false);
+
+  const toggleRHSNav = () => setIsRHSClosed(!isRHSClosed);
+
   return (
-    <>
-      {/* Full Navbar */}
-      {/* <TrainingNavBar /> */}
+    <div className={`dashboard-container d-flex ${isRHSClosed ? "rhs-closed" : ""}`}>
+      {/* Main Content */}
+      <div className="main-content flex-grow-1">
+        <TrainingNavBar isRHSClosed={isRHSClosed} toggleRHSNav={toggleRHSNav} />
+       <div className="dashboard-box p-3">
+  <h4>Dashboard Content Here</h4>
+  <p>Some additional content can go here.</p>
+</div>
 
-    
-      <Container fluid className="mt-4">
-        <Row>
-          <Col lg={8} md={8} sm={12}>
-            <p>hgjsdgfhjd</p>
-            <p>fjfg jhgfhjd</p>
-          </Col>
+      </div>
 
-          <Col lg={4} md={4} sm={12}>
-           
-          </Col>
-        </Row>
-      </Container>
-    </>
+      {/* RHS Navigation */}
+      <RHSNav isNavClosedProp={isRHSClosed} toggleNavProp={toggleRHSNav} />
+    </div>
   );
 };
 

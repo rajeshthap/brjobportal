@@ -19,7 +19,7 @@ import UserRegistration from "./componets/user/UserPages/UserRegistration";
 import UserLogin from "./componets/user/UserPages/UserLogin";
 import Cards from "./componets/user/UserPages/Cards";
 import Footer from "./componets/user/footer/Footer";
-import UserTranningDashBoard from "./componets/TranningUser/DashBoard/UserTrainingDashBoard";
+import UserTrainingDashBoard from "./componets/TranningUser/DashBoard/UserTrainingDashBoard";
 // import UserDashBoard from "./componets/user/leftnav/UserDashBoard";
 import UserDashboard from "./componets/user/leftnav/UserDashboard";
 import JobCard from "./componets/user/leftnav/JobCard";
@@ -190,7 +190,8 @@ const RoleBasedNavbar = () => {
         <Route path="/Success" element={<Success />} />
         <Route path="/AccessRefreshToken" element={<AccessRefreshToken />} />
         <Route path="/TrainingVerifyOtp" element={<TrainingVerifyOtp />} />
-        <Route path="/UserTranningDashBoard" element={<UserTranningDashBoard />} />
+        <Route path="/UserTrainingDashBoard" element={<UserTrainingDashBoard />} />
+       
 
         <Route path="*" element={<NotFound />} />
       </Routes>
