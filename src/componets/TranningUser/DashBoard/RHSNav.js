@@ -8,10 +8,9 @@ import { IoMdSettings } from "react-icons/io";
 import { FaAlignLeft } from "react-icons/fa";
 import { LuLogOut } from "react-icons/lu";
 import { FaFileCircleCheck } from "react-icons/fa6";
-
+import "../../../assets/css/RHSNav.css"
 import "../../../custom/Mainstyle.css";
-import "../../../assets/css/AdminDashBoard.css";
-import "../../../assets/css/AdminInnerDashBoard.css";
+
 
 function RHSNav({ isNavClosedProp, toggleNavProp }) {
   const navigate = useNavigate();
