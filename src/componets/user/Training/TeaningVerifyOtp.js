@@ -40,8 +40,8 @@ const TeaningVerifyOtp = () => {
 
     try {
       await verifyOTP(phone, otp);
-      setSuccess("OTP verified successfully!");
-      navigate("/TrainingReact"); // Enable if you want to redirect
+      alert("OTP veryfied Thank you for Registration!");
+      navigate("/UserLogin"); // Enable if you want to redirect
     } catch (err) {
       console.error("OTP Error:", err);
       setError("Invalid OTP. Please try again.");

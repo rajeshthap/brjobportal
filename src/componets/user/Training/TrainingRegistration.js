@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Row, Col, Card, Form, Button, Spinner, Alert } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { registerUserT, sendOtp } from "../../../api/auth";
-import axios from "axios";
 
 const TrainingRegistration = () => {
   const candidate_phoneRef = useRef(null);
@@ -18,11 +17,11 @@ const TrainingRegistration = () => {
     training_description: "",
     training_date: "",
     training_duration: "6 months",
-    candidate_name: "", // <-- fixed key
+    candidate_name: "",
     candidate_email: "",
     candidate_phone: "",
-    Date_of_Birth: "",
-    Gender: "",
+    date_of_birth: "", // <-- renamed to lowercase consistently
+    gender: "",
     password: "",
     confirm_password: "",
     photo: null,
@@ -64,15 +63,16 @@ const TrainingRegistration = () => {
 
   const validateForm = () => {
     const errors = {};
-    const { candidate_name, candidate_email, candidate_phone, training_name, training_description, Date_of_Birth, Gender, password, confirm_password, photo } = formData;
+    const { candidate_name, candidate_email, candidate_phone, training_name, training_description, date_of_birth, gender, password, confirm_password, photo } = formData;
 
     if (!candidate_name || !/^[A-Za-z\s]+$/.test(candidate_name)) errors.candidate_name = "Name must contain only letters.";
     if (!candidate_email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(candidate_email)) errors.candidate_email = "Enter a valid email.";
     if (!candidate_phone || candidate_phone.length !== 10) errors.candidate_phone = "Phone must be 10 digits.";
     if (!training_name) errors.training_name = "Select training.";
     if (!training_description || training_description.length < 10) errors.training_description = "Description min 10 characters.";
-    if (!Date_of_Birth) errors.Date_of_Birth = "Date of Birth required.";
-    if (!Gender) errors.Gender = "Gender required.";
+    if (!date_of_birth) errors.date_of_birth = "Date of Birth required.";
+    if (!gender) errors.gender = "Gender required.";
+
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordPattern.test(password)) errors.password = "Password must contain uppercase, lowercase, number & special char.";
     if (confirm_password !== password) errors.confirm_password = "Passwords do not match.";
@@ -103,7 +103,6 @@ const TrainingRegistration = () => {
       candidate_emailRef.current?.focus();
       return;
     }
-
     if (candidate_phoneExists) {
       alert("This phone is already registered for this training!");
       candidate_phoneRef.current?.focus();
@@ -131,11 +130,19 @@ const TrainingRegistration = () => {
       }
 
       const payload = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] !== null && formData[key] !== undefined) {
-          payload.append(key, formData[key]);
-        }
-      });
+      // Explicitly append fields to make sure date_of_birth is included
+      payload.append("training_name", formData.training_name);
+      payload.append("training_description", formData.training_description);
+      payload.append("training_date", formData.training_date);
+      payload.append("training_duration", formData.training_duration);
+      payload.append("candidate_name", formData.candidate_name);
+      payload.append("candidate_email", formData.candidate_email);
+      payload.append("candidate_phone", formData.candidate_phone);
+      payload.append("date_of_birth", formData.date_of_birth);
+      payload.append("gender", formData.gender);
+      payload.append("password", formData.password);
+      payload.append("confirm_password", formData.confirm_password);
+      if (formData.photo) payload.append("photo", formData.photo);
       payload.append("Training_id", currentTrainingId);
 
       await registerUserT(payload, "training");
@@ -152,6 +159,7 @@ const TrainingRegistration = () => {
       alert("Training registration successful! OTP sent.");
       navigate("/TrainingVerifyOtp");
 
+      // Reset form
       setFormData({
         training_name: "",
         training_description: "",
@@ -160,8 +168,8 @@ const TrainingRegistration = () => {
         candidate_name: "",
         candidate_email: "",
         candidate_phone: "",
-        Date_of_Birth: "",
-        Gender: "",
+        date_of_birth: "",
+        gender: "",
         password: "",
         confirm_password: "",
         photo: null,
@@ -280,13 +288,13 @@ const TrainingRegistration = () => {
                 <Form.Label>Date of Birth</Form.Label>
                 <Form.Control
                   type="date"
-                  name="Date_of_Birth"
-                  value={formData.Date_of_Birth}
+                  name="date_of_birth"
+                  value={formData.date_of_birth}
                   onChange={handleChange}
-                  isInvalid={!!errorMessages.Date_of_Birth}
+                  isInvalid={!!errorMessages.date_of_birth}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.Date_of_Birth}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">{errorMessages.date_of_birth}</Form.Control.Feedback>
               </Form.Group>
 
               {/* Gender */}
@@ -296,22 +304,22 @@ const TrainingRegistration = () => {
                   <Form.Check
                     type="radio"
                     label="Male"
-                    name="Gender"
+                    name="gender"
                     value="male"
-                    checked={formData.Gender === "male"}
+                    checked={formData.gender === "male"}
                     onChange={handleChange}
                     required
                   />
                   <Form.Check
                     type="radio"
                     label="Female"
-                    name="Gender"
+                    name="gender"
                     value="female"
-                    checked={formData.Gender === "female"}
+                    checked={formData.gender === "female"}
                     onChange={handleChange}
                   />
                 </div>
-                {errorMessages.Gender && <div className="text-danger">{errorMessages.Gender}</div>}
+                {errorMessages.gender && <div className="text-danger">{errorMessages.gender}</div>}
               </Form.Group>
 
               {/* Password */}

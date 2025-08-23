@@ -237,11 +237,7 @@ const TrainingReact = () => {
                 <div className="text-center mt-3 ">
                   <Link
                     to="/TrainingRegistration"
-                    state={{
-                      training_name: "React Training Program",
-                      training_description:
-                        "A complete hands-on React training program covering fundamentals, hooks, routing, styling, and deployment.",
-                    }}
+                    
                   >
                     <button className=" btn btn-primary rounded-pill px-4 ">
                       Register Now

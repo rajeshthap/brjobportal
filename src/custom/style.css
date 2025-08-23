@@ -478,6 +478,9 @@ button.nd-primary-btn.btn.btn-secondary {
 .img-ml{
   margin-left: var(--awc-space-200);
 }
+.spi-top{
+  margin-top: var(--awc-space-500);
+}
 @media (min-width: 992px) {
   .mob-saved-job-btn {
     display: none !important;
@@ -543,4 +546,8 @@ button.nd-primary-btn.btn.btn-secondary {
   .mobile-img {
     display: none;
   }
+  .cdpo-lhs-nav {
+    display: none !important;
+}
+
 }

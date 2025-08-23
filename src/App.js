@@ -98,6 +98,7 @@ import VideoTraining from "./componets/TranningUser/DashBoard/VideoTraining";
 import PDFTraining from "./componets/TranningUser/DashBoard/PDFTraining";
 import LiveTraining from "./componets/TranningUser/DashBoard/LiveTraining";
 import UpcomingEvent from "./componets/TranningUser/DashBoard/UpcomingEvent";
+import TrainingProfile from "./componets/TranningUser/DashBoard/TrainingProfile";
 function App() {
   return (
     <Router>
@@ -221,6 +222,7 @@ const RoleBasedNavbar = () => {
         <Route path="/PDFTraining" element={<PDFTraining/>} />
         <Route path="/LiveTraining" element={<LiveTraining/>} />
         <Route path="/UpcomingEvent" element={<UpcomingEvent/>} />
+        <Route path="/TrainingProfile" element={<TrainingProfile/>} />
 
         
         

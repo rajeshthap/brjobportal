@@ -24,12 +24,14 @@ import { RiFileVideoLine } from "react-icons/ri";
 import { RiNewsLine } from "react-icons/ri";
 import { ImFilePdf } from "react-icons/im";
 import { MdEmojiEvents } from "react-icons/md";
+import { MdDashboard } from "react-icons/md";
 
 function RHSNav({ isNavClosedProp, toggleNavProp }) {
   const navigate = useNavigate();
 
   const navigationOptions = [
     // { icon: <RxDashboard />, label: "Dashboard", path: "/EmployeeDashBoard" },
+    { icon: <MdDashboard />, label: "DashBoard", path: "/UserTrainingDashBoard" },
     { icon: <FaPython />, label: "Python", path: "/Python" },
     { icon: <MdOutlinePhp />, label: "PHP", path: "/PHP" },
     { icon: <RiReactjsFill />, label: "React", path: "/ReactTraining" },

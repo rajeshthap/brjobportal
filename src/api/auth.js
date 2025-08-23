@@ -15,6 +15,20 @@ export const sendOtp = async (phone) => {
 
 
 };
+// Training register
+export const fetchTrainingDetailsByEmail = async (email_id) => {
+  const email= localStorage.getItem("email_id");
+  try {
+    const response = await axios.get(
+      `${BASE_URLL}api4/training_user/${email}/`
+    );
+    console.log("email",response.data);
+    return response.data; // Assuming API returns { training_name, description, applied_date, duration }
+  } catch (error) {
+    console.error("Error fetching training details:", error);
+    throw error;
+  }
+};
 // Register API
 export const registerUser = async (formData) => {
   try {
@@ -371,9 +385,6 @@ export const fetchUserProfileById = async (userId) => {
       throw new Error("Access token or user ID not found in localStorage.");
       
     }
-
-    
-
     const res = await axios.get(
       `${BASE_URLL}api/Registerduser/${storedUserId}/`,
 
@@ -396,6 +407,7 @@ export const fetchUserProfileById = async (userId) => {
 
 // resume profile
  // adjust this path if needed
+
 
 export const fetchResumeWithUserDetails = async () => {
   const rawUserId = localStorage.getItem("user_id");

@@ -229,8 +229,23 @@ function TrainingNavBar({ isRHSClosed, toggleRHSNav }) {
                 }
                 id="user-profile-dropdown"
               >
+                 <NavDropdown.Item
+                        as={Link}
+                        to="/UserTrainingDashBoard"
+                        onClick={handleNavClick}
+                      >
+                        DashBoard
+                      </NavDropdown.Item>
+                       <NavDropdown.Item
+                        as={Link}
+                        to="/TrainingProfile"
+                        onClick={handleNavClick}
+                      >
+                        View Profile
+                      </NavDropdown.Item>
                 {!loading && <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>}
               </NavDropdown>
+
             )}
 
             {/* Toggle RHS Nav button */}

@@ -1,0 +1,108 @@
+.my-profile h3 {
+  font-weight: 700;
+  color: #1a73e8;
+}
+
+/* .training-card {
+  background: #f9fbff;
+} */
+
+.edit-circle {
+  background-color: var(--awc-blue-primary) !important;
+  border-radius: 50%;
+}
+
+
+/* Container styling for profile card */
+.my-profile {
+  background-color: var(--awc-white);
+  border: none;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* User title section */
+.user-profile-title .user-sub-title {
+  text-align: center;
+  padding: var(--awc-space-500);
+}
+
+.user-profile-title .user-sub-title h5 {
+  color: var(--awc-black);
+  font-weight: 600;
+}
+
+.user-profile-title .user-sub-title p {
+  font-size: var(--awc-space-400);
+  margin: var(--awc-space-150) 0;
+  color: var(--awc-black);
+}
+
+
+.training-card {
+  
+  border-left: var(--awc-space-100) solid #1a73e8; 
+  border-radius:var(--awc-space-400) !important;
+  transition: all 0.3s ease;
+  font-size: var(--awc-space-400);
+}
+
+.training-card:hover {
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
+
+.training-card h6 {
+  font-size: var(--awc-space-400);
+  color: var(--awc-black);
+  font-weight: 700;
+  margin-bottom: var(--awc-space-200);
+}
+
+
+.training-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.training-card strong {
+  color: #000;
+  font-weight: 600;
+}
+
+/* Icon style */
+.training-card p::before {
+  content: "•";
+  color: #1a73e8;
+  font-weight: bold;
+  display: inline-block;
+  width: 12px;
+  margin-right: 8px;
+}
+
+/* Back button style */
+
+
+.back-btn:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+/* Edit photo button on profile pic */
+.edit-circle {
+  background-color: #1a73e8 !important;
+  border-radius: 50% !important;
+  border: none !important;
+}
+
+.edit-circle:hover {
+  background-color: #0d47a1 !important;
+}
+
+/* Profile image shadow */
+.user-profile-title img {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
