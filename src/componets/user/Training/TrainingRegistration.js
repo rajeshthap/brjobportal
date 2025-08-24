@@ -1,13 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Card, Form, Button, Spinner, Alert } from "react-bootstrap";
+import React, { useEffect, useState, useRef } from "react";
+import { Row, Col, Card, Form, Button, Spinner, Alert, InputGroup } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { registerUserT, sendOtp } from "../../../api/auth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const TrainingRegistration = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Destructure state safely
+  // Add refs for focusing fields
+  const refs = {
+    training_name: useRef(null),
+    training_description: useRef(null),
+    candidate_name: useRef(null),
+    candidate_email: useRef(null),
+    candidate_phone: useRef(null),
+    Date_of_Birth: useRef(null),
+    Gender: useRef(null),
+    password: useRef(null),
+    confirm_password: useRef(null),
+    photo: useRef(null),
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { training_name: stateTrainingName, training_description: stateTrainingDescription } = location.state || {};
 
   const [formData, setFormData] = useState({
@@ -30,7 +47,6 @@ const TrainingRegistration = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Pre-fill training details on mount
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     setFormData((prev) => ({
@@ -39,7 +55,7 @@ const TrainingRegistration = () => {
       training_name: stateTrainingName || prev.training_name,
       training_description: stateTrainingDescription || prev.training_description,
     }));
-  }, []); // Run only on mount
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,20 +88,26 @@ const TrainingRegistration = () => {
       photo,
     } = formData;
 
+    if (!training_name) errors.training_name = "Select training.";
+    if (!training_description || training_description.length < 10) errors.training_description = "Description min 10 characters.";
     if (!candidate_name || !/^[A-Za-z\s]+$/.test(candidate_name)) errors.candidate_name = "Name must contain only letters.";
     if (!candidate_email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(candidate_email)) errors.candidate_email = "Enter a valid email.";
     if (!candidate_phone || candidate_phone.length !== 10) errors.candidate_phone = "Phone must be 10 digits.";
-    if (!training_name) errors.training_name = "Select training.";
-    if (!training_description || training_description.length < 10) errors.training_description = "Description min 10 characters.";
     if (!Date_of_Birth) errors.Date_of_Birth = "Date of Birth required.";
     if (!Gender) errors.Gender = "Gender required.";
-
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordPattern.test(password)) errors.password = "Password must contain uppercase, lowercase, number & special char.";
     if (confirm_password !== password) errors.confirm_password = "Passwords do not match.";
     if (!photo) errors.photo = "Photo is required.";
 
     setErrorMessages(errors);
+
+    // Focus first invalid field
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField && refs[firstErrorField]?.current) {
+      refs[firstErrorField].current.focus();
+    }
+
     return Object.keys(errors).length === 0;
   };
 
@@ -118,11 +140,13 @@ const TrainingRegistration = () => {
     );
 
     if (emailExists) {
-      alert("This email is already registered for this training!");
+      setErrorMessages({ candidate_email: "This email is already registered for this training!" });
+      refs.candidate_email.current.focus();
       return;
     }
     if (phoneExists) {
-      alert("This phone is already registered for this training!");
+      setErrorMessages({ candidate_phone: "This phone is already registered for this training!" });
+      refs.candidate_phone.current.focus();
       return;
     }
 
@@ -157,35 +181,13 @@ const TrainingRegistration = () => {
           training_id: currentTrainingId,
         },
       });
-
-      // Reset form
-      setFormData({
-        training_name: "",
-        training_description: "",
-        training_date: new Date().toISOString().slice(0, 10),
-        training_duration: "6 months",
-        candidate_name: "",
-        candidate_email: "",
-        candidate_phone: "",
-        Date_of_Birth: "",
-        Gender: "",
-        password: "",
-        confirm_password: "",
-        photo: null,
-      });
-      setErrorMessages({});
     } catch (error) {
       console.error(error);
-      const fieldErrors = {};
-      if (error.candidate_email) fieldErrors.candidate_email = error.candidate_email[0];
-      if (error.candidate_phone) fieldErrors.candidate_phone = error.candidate_phone[0];
-      setErrorMessages((prev) => ({ ...prev, ...fieldErrors }));
       setErrorMsg(error.error || "Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="edit-main-heading">
       <Row className="justify-content-center">
@@ -198,8 +200,9 @@ const TrainingRegistration = () => {
             <Form onSubmit={handleSubmit}>
               {/* Training Name */}
               <Form.Group className="mb-3">
-                <Form.Label>Training Name</Form.Label>
-                <Form.Select
+                <Form.Label>Training Name <span className="text-danger">*</span></Form.Label>
+               <Form.Select
+                  ref={refs.training_name}
                   name="training_name"
                   value={formData.training_name}
                   onChange={handleChange}
@@ -224,12 +227,12 @@ const TrainingRegistration = () => {
 
               {/* Training Description */}
               <Form.Group className="mb-3">
-                <Form.Label>Training Description</Form.Label>
+                <Form.Label>Training Description <span className="text-danger">*</span></Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
                   name="training_description"
-                  value={formData.training_description}
+                  value={formData.training_description} ref={refs.training_description}
                   onChange={handleChange}
                   isInvalid={!!errorMessages.training_description}
                   required
@@ -239,7 +242,7 @@ const TrainingRegistration = () => {
 
               {/* Candidate Name */}
               <Form.Group className="mb-3">
-                <Form.Label>Name</Form.Label>
+                <Form.Label>Name<span className="text-danger">*</span></Form.Label>
                 <Form.Control
                   type="text"
                   name="candidate_name"
@@ -252,9 +255,10 @@ const TrainingRegistration = () => {
               </Form.Group>
 
               {/* Candidate Email */}
-              <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
+               <Form.Group className="mb-3">
+                <Form.Label>Email<span className="text-danger">*</span></Form.Label>
                 <Form.Control
+                  ref={refs.candidate_email}
                   type="email"
                   name="candidate_email"
                   value={formData.candidate_email}
@@ -267,10 +271,10 @@ const TrainingRegistration = () => {
 
               {/* Candidate Phone */}
               <Form.Group className="mb-3">
-                <Form.Label>Phone</Form.Label>
+                <Form.Label>Phone<span className="text-danger">*</span></Form.Label>
                 <Form.Control
                   type="text"
-                  name="candidate_phone"
+                  name="candidate_phone"ref={refs.candidate_phone}
                   value={formData.candidate_phone}
                   onChange={handleChange}
                   placeholder="10-digit phone"
@@ -282,13 +286,13 @@ const TrainingRegistration = () => {
 
               {/* Date of Birth */}
               <Form.Group className="mb-3">
-                <Form.Label>Date of Birth</Form.Label>
+                <Form.Label>Date of Birth<span className="text-danger">*</span></Form.Label>
                 <Form.Control
                   type="date"
                   name="Date_of_Birth"
                   value={formData.Date_of_Birth}
                   onChange={handleChange}
-                  isInvalid={!!errorMessages.Date_of_Birth}
+                  isInvalid={!!errorMessages.Date_of_Birth} ref={refs.Date_of_Birth}
                   required
                 />
                 <Form.Control.Feedback type="invalid">{errorMessages.Date_of_Birth}</Form.Control.Feedback>
@@ -296,7 +300,7 @@ const TrainingRegistration = () => {
 
               {/* Gender */}
               <Form.Group className="mb-3">
-                <Form.Label>Gender</Form.Label>
+                <Form.Label>Gender<span className="text-danger">*</span></Form.Label>
                 <div className="d-flex gap-3">
                   <Form.Check
                     type="radio"
@@ -320,36 +324,54 @@ const TrainingRegistration = () => {
               </Form.Group>
 
               {/* Password */}
-              <Form.Group className="mb-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  isInvalid={!!errorMessages.password}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">{errorMessages.password}</Form.Control.Feedback>
-              </Form.Group>
+             <Form.Group className="mb-3">
+  <Form.Label>Password<span className="text-danger">*</span></Form.Label>
+  <InputGroup>
+    <Form.Control
+      type={showPassword ? "text" : "password"}
+      name="password"
+      value={formData.password} 
+      onChange={handleChange}
+      isInvalid={!!errorMessages.password}
+      required ref={refs.password}
+    />
+    <InputGroup.Text
+      onClick={() => setShowPassword(!showPassword)}
+      style={{ cursor: "pointer" }}
+    >
+      {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </InputGroup.Text>
+    <Form.Control.Feedback type="invalid">{errorMessages.password}</Form.Control.Feedback>
+  </InputGroup>
+  {errorMessages.password && <div className="text-danger">{errorMessages.password}</div>}
+</Form.Group>
 
-              {/* Confirm Password */}
-              <Form.Group className="mb-3">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="confirm_password"
-                  value={formData.confirm_password}
-                  onChange={handleChange}
-                  isInvalid={!!errorMessages.confirm_password}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">{errorMessages.confirm_password}</Form.Control.Feedback>
-              </Form.Group>
+{/* Confirm Password field */}
+<Form.Group className="mb-3">
+  <Form.Label>Confirm Password<span className="text-danger">*</span></Form.Label>
+  <InputGroup>
+    <Form.Control
+      type={showConfirmPassword ? "text" : "password"}
+      name="confirm_password"
+      value={formData.confirm_password} ref={refs.confirm_password}
+      onChange={handleChange}
+      isInvalid={!!errorMessages.confirm_password}
+      required
+    />
+    <InputGroup.Text
+      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+      style={{ cursor: "pointer" }}
+    >
+      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+    </InputGroup.Text>
+    <Form.Control.Feedback type="invalid">{errorMessages.confirm_password}</Form.Control.Feedback>
+  </InputGroup>
+  {errorMessages.confirm_password && <div className="text-danger">{errorMessages.confirm_password}</div>}
+</Form.Group>
 
               {/* Photo */}
               <Form.Group className="mb-3">
-                <Form.Label>Upload Photo</Form.Label>
+                <Form.Label>Upload Photo<span className="text-danger">*</span></Form.Label>
                 {formData.photo && (
                   <img
                     src={formData.photo instanceof File ? URL.createObjectURL(formData.photo) : formData.photo}
