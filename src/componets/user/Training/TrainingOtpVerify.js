@@ -3,7 +3,7 @@ import { Form, Button, Card, Row, Container, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { verifyOTP, resendOTP } from "../../../api/auth";
 
-const TeaningVerifyOtp = () => {
+const TrainingOtpVerify = () => {
   const [otp, setOtp] = useState("");
   const [countdown, setCountdown] = useState(60);
   const [phone, setPhone] = useState("");
@@ -111,4 +111,4 @@ const TeaningVerifyOtp = () => {
   );
 };
 
-export default TeaningVerifyOtp;
+export default TrainingOtpVerify;

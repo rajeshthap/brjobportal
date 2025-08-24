@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   useLocation,
+  Outlet,
 } from "react-router-dom";
 import "../src/custom/style.css";
 import NavBar from "./componets/user/top-navbar/NavBar";
@@ -81,7 +82,7 @@ import Loading from "./api/Loading";
 import JobListWithPagination from "./componets/user/leftnav/JobListWithPagination";
 import AccessRefreshToken from "./componets/user/Employee/AccessRefreshToken";
 import Success from "./api/Success";
-import TrainingVerifyOtp from "./componets/user/Training/TeaningVerifyOtp";
+
 import TrainingNavBar from "./componets/user/top-navbar/TrainingNavBar";
 import Python from "./componets/TranningUser/DashBoard/Python";
 import PHP from "./componets/TranningUser/DashBoard/PHP";
@@ -99,6 +100,7 @@ import PDFTraining from "./componets/TranningUser/DashBoard/PDFTraining";
 import LiveTraining from "./componets/TranningUser/DashBoard/LiveTraining";
 import UpcomingEvent from "./componets/TranningUser/DashBoard/UpcomingEvent";
 import TrainingProfile from "./componets/TranningUser/DashBoard/TrainingProfile";
+import TrainingOtpVerify from "./componets/user/Training/TrainingOtpVerify";
 function App() {
   return (
     <Router>
@@ -139,9 +141,10 @@ const RoleBasedNavbar = () => {
     
     <>
    
-
+ <Outlet />
       {!shouldHideNavbar && <RoleBasedNavbar />}
       <Routes>
+       
         <Route path="/" element={<Home />} />
         <Route path="/UserLogin" element={<UserLogin />} />
         <Route path="/UserRegistration" element={<UserRegistration />} />
@@ -205,7 +208,7 @@ const RoleBasedNavbar = () => {
         <Route path="/JobListWithPagination" element={<JobListWithPagination />} />
         <Route path="/Success" element={<Success />} />
         <Route path="/AccessRefreshToken" element={<AccessRefreshToken />} />
-        <Route path="/TrainingVerifyOtp" element={<TrainingVerifyOtp />} />
+       
         <Route path="/UserTrainingDashBoard" element={<UserTrainingDashBoard />} />
         <Route path="/Python" element={<Python />} />
         <Route path="/PHP" element={<PHP/>} />
@@ -223,6 +226,7 @@ const RoleBasedNavbar = () => {
         <Route path="/LiveTraining" element={<LiveTraining/>} />
         <Route path="/UpcomingEvent" element={<UpcomingEvent/>} />
         <Route path="/TrainingProfile" element={<TrainingProfile/>} />
+        <Route path="/TrainingOtpVerify" element={<TrainingOtpVerify/>} />
 
         
         

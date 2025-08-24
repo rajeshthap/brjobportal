@@ -1,17 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Form, Button, Spinner, Alert } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { registerUserT, sendOtp } from "../../../api/auth";
 
 const TrainingRegistration = () => {
-  const candidate_phoneRef = useRef(null);
-  const candidate_emailRef = useRef(null);
-
   const location = useLocation();
-  const stateData = location.state || {};
   const navigate = useNavigate();
 
-  const [trainingCounter, setTrainingCounter] = useState(1);
+  // Destructure state safely
+  const { training_name: stateTrainingName, training_description: stateTrainingDescription } = location.state || {};
+
   const [formData, setFormData] = useState({
     training_name: "",
     training_description: "",
@@ -20,8 +18,8 @@ const TrainingRegistration = () => {
     candidate_name: "",
     candidate_email: "",
     candidate_phone: "",
-    date_of_birth: "", // <-- renamed to lowercase consistently
-    gender: "",
+    Date_of_Birth: "",
+    Gender: "",
     password: "",
     confirm_password: "",
     photo: null,
@@ -32,18 +30,16 @@ const TrainingRegistration = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Pre-fill training details on mount
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     setFormData((prev) => ({
       ...prev,
       training_date: today,
-      training_name: stateData.training_name || prev.training_name,
-      training_description: stateData.training_description || prev.training_description,
+      training_name: stateTrainingName || prev.training_name,
+      training_description: stateTrainingDescription || prev.training_description,
     }));
-
-    const savedCounter = parseInt(localStorage.getItem("trainingCounter") || "1", 10);
-    setTrainingCounter(savedCounter);
-  }, [stateData]);
+  }, []); // Run only on mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,15 +59,26 @@ const TrainingRegistration = () => {
 
   const validateForm = () => {
     const errors = {};
-    const { candidate_name, candidate_email, candidate_phone, training_name, training_description, date_of_birth, gender, password, confirm_password, photo } = formData;
+    const {
+      candidate_name,
+      candidate_email,
+      candidate_phone,
+      training_name,
+      training_description,
+      Date_of_Birth,
+      Gender,
+      password,
+      confirm_password,
+      photo,
+    } = formData;
 
     if (!candidate_name || !/^[A-Za-z\s]+$/.test(candidate_name)) errors.candidate_name = "Name must contain only letters.";
     if (!candidate_email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(candidate_email)) errors.candidate_email = "Enter a valid email.";
     if (!candidate_phone || candidate_phone.length !== 10) errors.candidate_phone = "Phone must be 10 digits.";
     if (!training_name) errors.training_name = "Select training.";
     if (!training_description || training_description.length < 10) errors.training_description = "Description min 10 characters.";
-    if (!date_of_birth) errors.date_of_birth = "Date of Birth required.";
-    if (!gender) errors.gender = "Gender required.";
+    if (!Date_of_Birth) errors.Date_of_Birth = "Date of Birth required.";
+    if (!Gender) errors.Gender = "Gender required.";
 
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordPattern.test(password)) errors.password = "Password must contain uppercase, lowercase, number & special char.";
@@ -80,6 +87,18 @@ const TrainingRegistration = () => {
 
     setErrorMessages(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  const generateTrainingId = (trainingName, phone) => {
+    if (!trainingName || !phone) return "";
+    const prefix = trainingName
+      .split(" ")
+      .map((w) => w.charAt(0).toUpperCase())
+      .join("")
+      .slice(0, 3);
+    const uniqueSuffix = phone.slice(-4);
+    const randomPart = Math.floor(100 + Math.random() * 900);
+    return `${prefix}_${uniqueSuffix}_${randomPart}`;
   };
 
   const handleSubmit = async (e) => {
@@ -91,58 +110,31 @@ const TrainingRegistration = () => {
 
     const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
 
-    const candidate_emailExists = registeredUsers.some(
+    const emailExists = registeredUsers.some(
       (u) => u.candidate_email === formData.candidate_email && u.training_name === formData.training_name
     );
-    const candidate_phoneExists = registeredUsers.some(
+    const phoneExists = registeredUsers.some(
       (u) => u.candidate_phone === formData.candidate_phone && u.training_name === formData.training_name
     );
 
-    if (candidate_emailExists) {
+    if (emailExists) {
       alert("This email is already registered for this training!");
-      candidate_emailRef.current?.focus();
       return;
     }
-    if (candidate_phoneExists) {
+    if (phoneExists) {
       alert("This phone is already registered for this training!");
-      candidate_phoneRef.current?.focus();
       return;
     }
 
     setLoading(true);
 
     try {
-      const candidate_phoneTrainingMap = JSON.parse(localStorage.getItem("candidate_phoneTrainingMap") || "{}");
-      let currentTrainingId;
-
-      if (candidate_phoneTrainingMap[formData.candidate_phone]) {
-        currentTrainingId = candidate_phoneTrainingMap[formData.candidate_phone];
-      } else {
-        const nextCounter = Math.min(trainingCounter, 12);
-        currentTrainingId = `T_id_${String(nextCounter).padStart(2, "0")}`;
-        candidate_phoneTrainingMap[formData.candidate_phone] = currentTrainingId;
-        localStorage.setItem("candidate_phoneTrainingMap", JSON.stringify(candidate_phoneTrainingMap));
-
-        if (trainingCounter < 12) {
-          localStorage.setItem("trainingCounter", String(trainingCounter + 1));
-          setTrainingCounter(trainingCounter + 1);
-        }
-      }
+      const currentTrainingId = generateTrainingId(formData.training_name, formData.candidate_phone);
 
       const payload = new FormData();
-      // Explicitly append fields to make sure date_of_birth is included
-      payload.append("training_name", formData.training_name);
-      payload.append("training_description", formData.training_description);
-      payload.append("training_date", formData.training_date);
-      payload.append("training_duration", formData.training_duration);
-      payload.append("candidate_name", formData.candidate_name);
-      payload.append("candidate_email", formData.candidate_email);
-      payload.append("candidate_phone", formData.candidate_phone);
-      payload.append("date_of_birth", formData.date_of_birth);
-      payload.append("gender", formData.gender);
-      payload.append("password", formData.password);
-      payload.append("confirm_password", formData.confirm_password);
-      if (formData.photo) payload.append("photo", formData.photo);
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] !== null) payload.append(key, formData[key]);
+      });
       payload.append("Training_id", currentTrainingId);
 
       await registerUserT(payload, "training");
@@ -152,12 +144,19 @@ const TrainingRegistration = () => {
         candidate_email: formData.candidate_email,
         candidate_phone: formData.candidate_phone,
         training_name: formData.training_name,
+        training_id: currentTrainingId,
       });
       localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
       localStorage.setItem("candidate_phone", formData.candidate_phone);
 
       alert("Training registration successful! OTP sent.");
-      navigate("/TrainingVerifyOtp");
+      navigate("/TrainingOtpVerify", {
+        replace: true,
+        state: {
+          candidate_phone: formData.candidate_phone,
+          training_id: currentTrainingId,
+        },
+      });
 
       // Reset form
       setFormData({
@@ -168,8 +167,8 @@ const TrainingRegistration = () => {
         candidate_name: "",
         candidate_email: "",
         candidate_phone: "",
-        date_of_birth: "",
-        gender: "",
+        Date_of_Birth: "",
+        Gender: "",
         password: "",
         confirm_password: "",
         photo: null,
@@ -260,7 +259,6 @@ const TrainingRegistration = () => {
                   name="candidate_email"
                   value={formData.candidate_email}
                   onChange={handleChange}
-                  ref={candidate_emailRef}
                   isInvalid={!!errorMessages.candidate_email}
                   required
                 />
@@ -273,7 +271,6 @@ const TrainingRegistration = () => {
                 <Form.Control
                   type="text"
                   name="candidate_phone"
-                  ref={candidate_phoneRef}
                   value={formData.candidate_phone}
                   onChange={handleChange}
                   placeholder="10-digit phone"
@@ -288,13 +285,13 @@ const TrainingRegistration = () => {
                 <Form.Label>Date of Birth</Form.Label>
                 <Form.Control
                   type="date"
-                  name="date_of_birth"
-                  value={formData.date_of_birth}
+                  name="Date_of_Birth"
+                  value={formData.Date_of_Birth}
                   onChange={handleChange}
-                  isInvalid={!!errorMessages.date_of_birth}
+                  isInvalid={!!errorMessages.Date_of_Birth}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.date_of_birth}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">{errorMessages.Date_of_Birth}</Form.Control.Feedback>
               </Form.Group>
 
               {/* Gender */}
@@ -304,22 +301,22 @@ const TrainingRegistration = () => {
                   <Form.Check
                     type="radio"
                     label="Male"
-                    name="gender"
+                    name="Gender"
                     value="male"
-                    checked={formData.gender === "male"}
+                    checked={formData.Gender === "male"}
                     onChange={handleChange}
                     required
                   />
                   <Form.Check
                     type="radio"
                     label="Female"
-                    name="gender"
+                    name="Gender"
                     value="female"
-                    checked={formData.gender === "female"}
+                    checked={formData.Gender === "female"}
                     onChange={handleChange}
                   />
                 </div>
-                {errorMessages.gender && <div className="text-danger">{errorMessages.gender}</div>}
+                {errorMessages.Gender && <div className="text-danger">{errorMessages.Gender}</div>}
               </Form.Group>
 
               {/* Password */}
