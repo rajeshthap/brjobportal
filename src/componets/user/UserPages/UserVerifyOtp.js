@@ -5,6 +5,7 @@ import { verifyOTP, resendOTP } from "../../../api/auth";
 
 const UserVerifyOtp = () => {
   const [otp, setOtp] = useState("");
+   const [TrainingOtpVerify, setTrainingOtpVerify] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [phone, setPhone] = useState("");
 
@@ -54,6 +55,22 @@ const UserVerifyOtp = () => {
       setError("Invalid OTP. Please try again.");
     }
   };
+useEffect(() => {
+  // Push the current page into history so user can't go back
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Disable back button by re-pushing the same page
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  // Use lowercase 'popstate'
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [navigate]); 
 
   const handleResend = async () => {
     setError("");

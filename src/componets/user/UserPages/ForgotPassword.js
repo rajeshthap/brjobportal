@@ -34,6 +34,22 @@ const ForgotPassword = () => {
     setMessage("");
     setErrors("");
   };
+useEffect(() => {
+  // Push the current page into history so user can't go back
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Disable back button by re-pushing the same page
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  // Use lowercase 'popstate'
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [navigate]); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,7 +87,7 @@ const ForgotPassword = () => {
         navigate("/UserLogin");
       }, 2000);
     } catch (error) {
-      setErrors(error.response?.data?.error || "Something went wrong.");
+      setErrors(error.response?.data?.error || "Multiple accounts found with this phone number.");
     } finally {
       setLoading(false);
     }

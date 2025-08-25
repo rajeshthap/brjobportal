@@ -49,8 +49,8 @@ const TrainingProfile = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center mt-5">
-        <Spinner animation="border" />
+       <div className="center-spinner">
+        <Spinner animation="border" role="status" />  Profile Loading
       </div>
     );
   }
@@ -82,54 +82,47 @@ const TrainingProfile = () => {
           </Row>
         </Row>
 
-        <Row>
-          {/* User Info */}
-          <Col md={4} className="user-profile-title mb-4">
-            <div className="user-sub-title">
-              <div className="position-relative d-inline-block">
-                {photoUrl ? (
-                  <Image
-                    src={photoUrl}
-                    roundedCircle
-                    width={160}
-                    height={160}
-                    alt="Profile"
-                    style={{ objectFit: "cover", border: "6px solid #1a73e82f" }}
-                  />
-                ) : (
-                  <FaUserCircle size={160} className="text-muted mb-3" />
-                )}
+      <Row className="align-items-center">
+  {/* Left side - Photo (6 columns) */}
+  <Col md={3} lg={3} sm={12} className="text-center mb-4">
+    <div className="position-relative d-inline-block">
+      {photoUrl ? (
+        <Image
+          src={photoUrl}
+          roundedCircle
+          width={180}
+          height={180}
+          alt="Profile"
+          style={{ objectFit: "cover", border: "6px solid #1a73e82f" }}
+        />
+      ) : (
+        <FaUserCircle size={180} className="text-muted mb-3" />
+      )}
 
-                <Button
-                  variant="primary"
-                  className="position-absolute bottom-0 end-0 p-2 border edit-circle"
-                  onClick={() => setShowEdit(true)}
-                >
-                  <TbPhotoEdit />
-                </Button>
-              </div>
+      <Button
+        variant="primary"
+        className="position-absolute bottom-0 end-0 p-2 border edit-circle"
+        onClick={() => setShowEdit(true)}
+      >
+        <TbPhotoEdit />
+      </Button>
+      
+    </div>
+     <h5 className="fw-bold mt-3 mb-3">{userData?.name || "User Name"}</h5>
+  </Col>
 
-              <h5 className="fw-bold mt-3">{userData?.name}</h5>
-              <Row>
-                <Col lg={6} md={6} sm={12}>
-                  <p><FaEnvelope className="me-2" />{userData?.email}</p>
-                </Col>
-                <Col lg={6} md={6} sm={12}>
-                  <p><FaPhone className="me-2" />{userData?.phone}</p>
-                </Col>
-                <Col lg={6} md={6} sm={12}>
-                  <p><CgCalendarDates className="me-2" />{userData?.Date_of_Birth || "N/A"}</p>
-                </Col>
-                <Col lg={6} md={6} sm={12}>
-                  <p><FaUser className="me-2" />{userData?.Gender || "N/A"}</p>
-                </Col>
-              </Row>
-            </div>
-          </Col>
+  {/* Right side - Details (6 columns) */}
+  <Col md={6}>
+   
 
-          {/* Training Info */}
-        
-        </Row>
+    <p><FaEnvelope className="me-2 card-render-icon" /> {userData?.email || "N/A"}</p>
+    <p><FaPhone className="me-2 card-render-icon"  /> {userData?.phone || "N/A"}</p>
+    
+    <p><CgCalendarDates className="me-2 card-render-icon" /> {userData?.Date_of_Birth || "07-08-2025"}</p>
+    <p><FaUser className="me-2 card-render-icon" /> {userData?.Gender || "N/A"}</p>
+  </Col>
+</Row>
+
       </Card>
 
       {showEdit && (

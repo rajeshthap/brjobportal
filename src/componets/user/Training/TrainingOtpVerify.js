@@ -7,6 +7,7 @@ const TrainingOtpVerify = () => {
   const [otp, setOtp] = useState("");
   const [countdown, setCountdown] = useState(60);
   const [phone, setPhone] = useState("");
+  const [TrainingOtpVerify, setOtpVerified]=useState(false);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -27,6 +28,21 @@ const TrainingOtpVerify = () => {
     }
     return () => clearInterval(timer);
   }, [countdown]);
+
+
+ useEffect(() => {
+  window.history.pushState(null, "", window.location.href);
+
+  
+
+const handlePopState =() =>{
+  if(!TrainingOtpVerify){
+    navigate("/TrainingOtpVerify");
+  }
+};
+window.addEventListener("popState", handlePopState );
+  return () => window.removeEventListener("popstate", handlePopState);
+}, [navigate, TrainingOtpVerify]);
 
   const handleVerify = async (e) => {
     e.preventDefault();

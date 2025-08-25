@@ -9,6 +9,7 @@ const UserOtp = () => {
   const [phone,] = useState(localStorage.getItem("phone") || "");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [TrainingOtpVerify, setTrainingOtpVerify] = useState(false);
 
   const navigate = useNavigate(); //  hook for redirect
 
@@ -47,6 +48,22 @@ const UserOtp = () => {
       setError("Invalid OTP. Please try again.");
     }
   };
+useEffect(() => {
+  // Push the current page into history so user can't go back
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Disable back button by re-pushing the same page
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  // Use lowercase 'popstate'
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [navigate]); 
 
   const handleResend = async () => {
     setError("");

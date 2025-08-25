@@ -11,6 +11,7 @@ import { BASE_URLL } from "../../../api/AxiosBaseUrl";
 import LocationSelect from "./LocationSelect";
 
 export const UserRegistration = async (formDataToSend) => {
+
   try {
     const res = await axios.post(
       `${BASE_URLL}api2/custom-resume/`,
@@ -41,6 +42,7 @@ const Profile = () => {
       percentage: "",
     },
   ]);
+     const [TrainingOtpVerify, setTrainingOtpVerify] = useState(false);
   const [courseType, setCourseType] = useState("");
   const [distanceCourse, setDistanceCourse] = useState([]);
   const [selectedLanguages, setSelectedLanguages] = useState([]);
@@ -129,6 +131,22 @@ const Profile = () => {
   const handleLanguageChange = (selected) => {
     setSelectedLanguages(selected || []);
   };
+useEffect(() => {
+  // Push the current page into history so user can't go back
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Disable back button by re-pushing the same page
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  // Use lowercase 'popstate'
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [navigate]); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();

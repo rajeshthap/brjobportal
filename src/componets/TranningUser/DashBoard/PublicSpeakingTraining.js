@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import RHSNav from "./RHSNav";
 import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
-import { Col } from "react-bootstrap";
+import { Button, Col } from "react-bootstrap";
 import { Row, Accordion, Card } from "react-bootstrap";
 import "../../../assets/css/RHSNav.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../../assets/css/Python.css";
 import { RiCheckboxCircleFill } from "react-icons/ri";
+import { MdKeyboardBackspace } from "react-icons/md";
 const PublicSpeakingTraining = () => {
   const [isRHSClosed, setIsRHSClosed] = useState(false);
-
+  const navigate = useNavigate();
   const toggleRHSNav = () => setIsRHSClosed(!isRHSClosed);
 
   return (
@@ -229,7 +230,11 @@ const PublicSpeakingTraining = () => {
                             </Accordion>
                           </Card>
                         </Col>
-
+ <Col md={1} sm={12}>
+              <Button variant="" className="back-btn" onClick={() => navigate(-1)}>
+                <MdKeyboardBackspace /> Back
+              </Button>
+            </Col>
                       {/* Right Column (Registration) */}
                     </Row>
                   </div>

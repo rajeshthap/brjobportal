@@ -6,8 +6,11 @@ import AccessRefreshToken from "../componets/user/Employee/AccessRefreshToken";
 
 export const sendOtp = async (phone) => {
   try {
+    const error1=localStorage.getItem('errortraining')
+    if(!error1){
     const response = await axios.post(`${BASE_URLL}api/Send-otp/`, { phone });
     return response.data; // Return the server response if needed
+    }
   } catch (error) {
     // Throw the error to be handled in the component
     throw error.response?.data || error;
@@ -19,7 +22,7 @@ export const sendOtp = async (phone) => {
 export const fetchTrainingDetailsByEmail = async (email_id) => {
   const email= localStorage.getItem("email_id");
   try {
-    const response = await axios.get(
+    const response = await AccessRefreshToken.get(
       `${BASE_URLL}api4/training_user/${email}/`
     );
     console.log("email",response.data);
@@ -50,15 +53,18 @@ export const registerUserT = async (formData) => {
     const response = await axios.post(
       `${BASE_URLL}api4/training_user_create/`,
       formData
-      
     );
-
-    return response.data;
-  
+    return response.data;  
   } catch (error) {
-    throw error.response?.data || { detail: "Registration failed" };
+   
+    const errMsg = error.response?.data?.detail || "Registration failed";
+    
+    localStorage.setItem('errortraining', JSON.stringify(errMsg));
+  
+    throw error.response?.data || { detail: errMsg };
   }
 };
+
 
 
 
@@ -71,7 +77,7 @@ export const getPostedJobById = async () => {
   // const employee_id = localStorage.getItem("employee_id"); // Ensure this is set
 
   try {
-  const response = await axios.get(`${BASE_URLL}api3/PostJonbyemloyee/`);
+  const response = await AccessRefreshToken.get(`${BASE_URLL}api3/PostJonbyemloyee/`);
  
 
 
@@ -152,7 +158,7 @@ export const getJobSuggestions = async (query) => {
 
 // save post get
 export const fetchSavedJobsByUserId = async (userId) => {
-  const response = await axios.get(
+  const response = await AccessRefreshToken.get(
     `${BASE_URLL}api/Savedpost/${userId}/`
   );
   return response.data;

@@ -539,13 +539,13 @@ const [selectedFilters, setSelectedFilters] = useState({
         </Card.Body>
       </Card>
     ) 
-    // : filteredJobs.length === 0 ? (
-    //   <Card className="text-center p-4 shadow-sm">
-    //     <Card.Body>
-    //       <Card.Title>No jobs found</Card.Title>
-    //     </Card.Body>
-    //   </Card>
-    // ) 
+    : filteredJobs.length === 0 ? (
+      <Card className="text-center p-4 shadow-sm">
+        <Card.Body>
+          <Card.Title>No jobs found</Card.Title>
+        </Card.Body>
+      </Card>
+    ) 
     : (
       filteredJobs.map(renderJobCard)
     )}

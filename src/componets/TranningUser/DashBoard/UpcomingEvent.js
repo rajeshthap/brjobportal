@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import RHSNav from "./RHSNav";
 import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
-import { Col } from "react-bootstrap";
+import { Button, Col } from "react-bootstrap";
 import { Row, Accordion, Card } from "react-bootstrap";
 import "../../../assets/css/RHSNav.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../../assets/css/Python.css";
 import Image1 from "../../../coming-soon.jpg";
 import { RiCheckboxCircleFill } from "react-icons/ri";
+import { MdKeyboardBackspace } from "react-icons/md";
 const UpcomingEvent = () => {
   const [isRHSClosed, setIsRHSClosed] = useState(false);
-
+const navigate = useNavigate();
   const toggleRHSNav = () => setIsRHSClosed(!isRHSClosed);
 
   return (
@@ -36,13 +37,34 @@ const UpcomingEvent = () => {
                          </div> */}
                   <div className="training-wrapper-py p-4">
                     <Row>
+
                       {/* Left Column (Accordion) */}
                 <Col md={12} sm={12} lg={12} className="mb-4">
+                
                 <Card>
+                   <div className="pay-now-register">
+ <h3></h3>
+                   <div className="pay-now-btn-dsbl">
+                                <button
+                                  className="btn btn-primary rounded-pill dash-board-btn px-4"
+                                  disabled
+                                 
+                                >
+                                  Pay Now
+                                </button>
+                              </div>
+                              </div>
                           <div className='comming-soon'>
       <img src={Image1} alt="Coming Soon" />
     </div></Card>
+    
                         </Col>
+                        
+  <Col md={1} sm={12}>
+              <Button variant="" className="back-btn" onClick={() => navigate(-1)}>
+                <MdKeyboardBackspace /> Back
+              </Button>
+            </Col>
 
                       {/* Right Column (Registration) */}
                     </Row>

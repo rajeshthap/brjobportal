@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import RHSNav from "./RHSNav";
 import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
-import { Col } from "react-bootstrap";
+import { Button, Col } from "react-bootstrap";
 import { Row, Accordion, Card } from "react-bootstrap";
 import "../../../assets/css/RHSNav.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../../assets/css/Python.css";
 import Image1 from "../../../coming-soon.jpg";
 import { RiCheckboxCircleFill } from "react-icons/ri";
+import { MdKeyboardBackspace } from "react-icons/md";
 const PDFTraining = () => {
   const [isRHSClosed, setIsRHSClosed] = useState(false);
-
+  const navigate = useNavigate();
   const toggleRHSNav = () => setIsRHSClosed(!isRHSClosed);
 
   return (
@@ -43,7 +44,11 @@ const PDFTraining = () => {
       <img src={Image1} alt="Coming Soon"  />
     </div></Card>
                         </Col>
-
+  <Col md={1} sm={12}>
+              <Button variant="" className="back-btn" onClick={() => navigate(-1)}>
+                <MdKeyboardBackspace /> Back
+              </Button>
+            </Col>
                       {/* Right Column (Registration) */}
                     </Row>
                   </div>

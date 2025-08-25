@@ -30,7 +30,7 @@ const TrainingUpdateProfile = ({ show, onHide, userData, onUpdate }) => {
           email: profile.email || "",
           phone: profile.phone || "",
           Gender: profile.Gender || "",
-          Date_of_Birth: profile.Date_of_Birth || "",
+          Date_of_Birth: profile.Date_of_Birth || "07-08-2025",
           photo: null,
           photoPreview: profile.photo 
             ? (profile.photo.startsWith("http") 
@@ -151,7 +151,7 @@ const TrainingUpdateProfile = ({ show, onHide, userData, onUpdate }) => {
             <Form.Control
               type="date"
               name="Date_of_Birth"
-              value={formData.Date_of_Birth}
+              value={formData.Date_of_Birth || "07-08-2025"}
               onChange={handleChange}
               required
             />
@@ -171,7 +171,7 @@ const TrainingUpdateProfile = ({ show, onHide, userData, onUpdate }) => {
                 width={100}
                 height={100}
                 rounded
-                className="mt-2"
+                className="mt-2" roundedCircle 
                 alt="Preview"
               />
             )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,7 +6,9 @@ import { googleLogin, loginUser } from "../../../api/auth";
 import { jwtDecode } from "jwt-decode";
 import "../../../assets/css/LoginForm.css";
 
+
 const UserLogin = () => {
+  const [TrainingOtpVerify, setTrainingOtpVerify] = useState(false);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState("");
@@ -66,14 +68,31 @@ const UserLogin = () => {
       console.error(" Server Response Error:");
       console.error("Status:", err.response.status);
       console.error("Data:", err.response.data);
-      setErrors(err.response.data.detail || "Invalid login credentials.");
+      setErrors(err.response.data.detail || "Invalid id or password.");
     } else {
       console.error(" Error Setting Up Request:", err.message);
-      setErrors("Something went wrong. Please try again.");
+      setErrors("This account linked to multiple accounts.");
     }
   }
 };
 
+
+useEffect(() => {
+  // Push the current page into history so user can't go back
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Disable back button by re-pushing the same page
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  // Use lowercase 'popstate'
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [navigate]); 
 
 
 

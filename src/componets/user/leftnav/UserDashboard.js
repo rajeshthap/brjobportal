@@ -1,19 +1,39 @@
 // src/components/UserPages/LeftNav.js
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "../../../assets/css/LeftNav.css";
 import { Col, Container, Row } from "react-bootstrap";
 import LeftComp from "./LeftComp";
 import PostJobCard from "./PostJobCard";
 import Adds from "../UserPages/Adds";
 import Loading from "../../../api/Loading";
+import { useNavigate } from "react-router-dom"; 
 
 const UserDashBoard = () => {
+  const navigate = useNavigate();
+  const [TrainingOtpVerify, setTrainingOtpVerify] = useState(false);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const handleFilter = useCallback((data) => {
     setFilteredJobs(data);
     setIsLoading(false);
   }, []);
+
+useEffect(() => {
+  // Push the current page into history so user can't go back
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Disable back button by re-pushing the same page
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  // Use lowercase 'popstate'
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [navigate]); 
 
   return (
     <Container fluid>

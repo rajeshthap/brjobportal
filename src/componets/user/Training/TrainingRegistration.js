@@ -1,5 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Row, Col, Card, Form, Button, Spinner, Alert, InputGroup } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Spinner,
+  Alert,
+  InputGroup,
+} from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { registerUserT, sendOtp } from "../../../api/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -25,7 +34,10 @@ const TrainingRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { training_name: stateTrainingName, training_description: stateTrainingDescription } = location.state || {};
+  const {
+    training_name: stateTrainingName,
+    training_description: stateTrainingDescription,
+  } = location.state || {};
 
   const [formData, setFormData] = useState({
     training_name: "",
@@ -53,7 +65,8 @@ const TrainingRegistration = () => {
       ...prev,
       training_date: today,
       training_name: stateTrainingName || prev.training_name,
-      training_description: stateTrainingDescription || prev.training_description,
+      training_description:
+        stateTrainingDescription || prev.training_description,
     }));
   }, []);
 
@@ -89,15 +102,26 @@ const TrainingRegistration = () => {
     } = formData;
 
     if (!training_name) errors.training_name = "Select training.";
-    if (!training_description || training_description.length < 10) errors.training_description = "Description min 10 characters.";
-    if (!candidate_name || !/^[A-Za-z\s]+$/.test(candidate_name)) errors.candidate_name = "Name must contain only letters.";
-    if (!candidate_email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(candidate_email)) errors.candidate_email = "Enter a valid email.";
-    if (!candidate_phone || candidate_phone.length !== 10) errors.candidate_phone = "Phone must be 10 digits.";
+    if (!training_description || training_description.length < 10)
+      errors.training_description = "Description min 10 characters.";
+    if (!candidate_name || !/^[A-Za-z\s]+$/.test(candidate_name))
+      errors.candidate_name = "Name must contain only letters.";
+    if (
+      !candidate_email ||
+      !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(candidate_email)
+    )
+      errors.candidate_email = "Enter a valid email.";
+    if (!candidate_phone || candidate_phone.length !== 10)
+      errors.candidate_phone = "Phone must be 10 digits.";
     if (!Date_of_Birth) errors.Date_of_Birth = "Date of Birth required.";
     if (!Gender) errors.Gender = "Gender required.";
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    if (!password || !passwordPattern.test(password)) errors.password = "Password must contain uppercase, lowercase, number & special char.";
-    if (confirm_password !== password) errors.confirm_password = "Passwords do not match.";
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!password || !passwordPattern.test(password))
+      errors.password =
+        "Password must contain uppercase, lowercase, number & special char.";
+    if (confirm_password !== password)
+      errors.confirm_password = "Passwords do not match.";
     if (!photo) errors.photo = "Photo is required.";
 
     setErrorMessages(errors);
@@ -130,22 +154,32 @@ const TrainingRegistration = () => {
 
     if (!validateForm()) return;
 
-    const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+    const registeredUsers = JSON.parse(
+      localStorage.getItem("registeredUsers") || "[]"
+    );
 
     const emailExists = registeredUsers.some(
-      (u) => u.candidate_email === formData.candidate_email && u.training_name === formData.training_name
+      (u) =>
+        u.candidate_email === formData.candidate_email &&
+        u.training_name === formData.training_name
     );
     const phoneExists = registeredUsers.some(
-      (u) => u.candidate_phone === formData.candidate_phone && u.training_name === formData.training_name
+      (u) =>
+        u.candidate_phone === formData.candidate_phone &&
+        u.training_name === formData.training_name
     );
 
     if (emailExists) {
-      setErrorMessages({ candidate_email: "This email is already registered for this training!" });
+      setErrorMessages({
+        candidate_email: "This email is already registered for this training!",
+      });
       refs.candidate_email.current.focus();
       return;
     }
     if (phoneExists) {
-      setErrorMessages({ candidate_phone: "This phone is already registered for this training!" });
+      setErrorMessages({
+        candidate_phone: "This phone is already registered for this training!",
+      });
       refs.candidate_phone.current.focus();
       return;
     }
@@ -153,7 +187,10 @@ const TrainingRegistration = () => {
     setLoading(true);
 
     try {
-      const currentTrainingId = generateTrainingId(formData.training_name, formData.candidate_phone);
+      const currentTrainingId = generateTrainingId(
+        formData.training_name,
+        formData.candidate_phone
+      );
 
       const payload = new FormData();
       Object.keys(formData).forEach((key) => {
@@ -161,15 +198,40 @@ const TrainingRegistration = () => {
       });
       payload.append("Training_id", currentTrainingId);
 
-      await registerUserT(payload, "training");
-      await sendOtp(formData.candidate_phone);
+      // --- Register user first ---
+      const registerResponse = await registerUserT(payload, "training");
 
+      // Check if registration was successful
+      if (!registerResponse || registerResponse.error) {
+        const ertrain = localStorage.getItem("errortraining");
+        if (ertrain) {
+          alert("Our records show you’re already enrolled in this training.");
+        } else {
+          alert(
+            "Email is already in use. Please try logging in or use a different email ."
+
+          );
+          navigate("/UserLogin")
+        }
+        return; 
+      }
+
+      // --- If registration succeeded, send OTP ---
+      const otpResponse = await sendOtp(formData.candidate_phone);
+
+      if (!otpResponse || otpResponse.error) {
+        alert("Failed to send OTP. Please try again.");
+        return;
+      }
+
+      // --- Save user locally only on success ---
       registeredUsers.push({
         candidate_email: formData.candidate_email,
         candidate_phone: formData.candidate_phone,
         training_name: formData.training_name,
         training_id: currentTrainingId,
       });
+
       localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
       localStorage.setItem("candidate_phone", formData.candidate_phone);
 
@@ -183,11 +245,12 @@ const TrainingRegistration = () => {
       });
     } catch (error) {
       console.error(error);
-      setErrorMsg(error.error || "Something went wrong. Try again.");
+      setErrorMsg(error.detail || "Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="edit-main-heading">
       <Row className="justify-content-center">
@@ -200,8 +263,10 @@ const TrainingRegistration = () => {
             <Form onSubmit={handleSubmit}>
               {/* Training Name */}
               <Form.Group className="mb-3">
-                <Form.Label>Training Name <span className="text-danger">*</span></Form.Label>
-               <Form.Select
+                <Form.Label>
+                  Training Name <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Select
                   ref={refs.training_name}
                   name="training_name"
                   value={formData.training_name}
@@ -211,38 +276,63 @@ const TrainingRegistration = () => {
                 >
                   <option value="">-- Select Training --</option>
                   <option value="React Training">React Training</option>
-                  <option value="Python Training Program">Python Training</option>
+                  <option value="Python Training Program">
+                    Python Training
+                  </option>
                   <option value="PHP Training">PHP Training</option>
                   <option value="MySQL Training">MySQL Training</option>
-                  <option value="HTML, CSS & Bootstrap Training">HTML, CSS & Bootstrap Training</option>
-                  <option value="Web Development Training">Web Development Training</option>
-                  <option value="UI/UX Designer Training">UI/UX Designer Training</option>
-                  <option value="Communication Skills Training">Communication Skills Training</option>
-                  <option value="Self-Confidence & Power Dressing Training">Self-Confidence & Power Dressing Training</option>
-                  <option value="Interview Skills Training Program Outline">Interview Skills Training Program Outline</option>
-                  <option value="Public Speaking Training">Public Speaking Training</option>
+                  <option value="HTML, CSS & Bootstrap Training">
+                    HTML, CSS & Bootstrap Training
+                  </option>
+                  <option value="Web Development Training">
+                    Web Development Training
+                  </option>
+                  <option value="UI/UX Designer Training">
+                    UI/UX Designer Training
+                  </option>
+                  <option value="Communication Skills Training">
+                    Communication Skills Training
+                  </option>
+                  <option value="Self-Confidence & Power Dressing Training">
+                    Self-Confidence & Power Dressing Training
+                  </option>
+                  <option value="Interview Skills Training Program Outline">
+                    Interview Skills Training Program Outline
+                  </option>
+                  <option value="Public Speaking Training">
+                    Public Speaking Training
+                  </option>
                 </Form.Select>
-                <Form.Control.Feedback type="invalid">{errorMessages.training_name}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.training_name}
+                </Form.Control.Feedback>
               </Form.Group>
 
               {/* Training Description */}
               <Form.Group className="mb-3">
-                <Form.Label>Training Description <span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Training Description <span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
                   name="training_description"
-                  value={formData.training_description} ref={refs.training_description}
+                  value={formData.training_description}
+                  ref={refs.training_description}
                   onChange={handleChange}
                   isInvalid={!!errorMessages.training_description}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.training_description}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.training_description}
+                </Form.Control.Feedback>
               </Form.Group>
 
               {/* Candidate Name */}
               <Form.Group className="mb-3">
-                <Form.Label>Name<span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Name<span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="candidate_name"
@@ -251,12 +341,16 @@ const TrainingRegistration = () => {
                   isInvalid={!!errorMessages.candidate_name}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.candidate_name}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.candidate_name}
+                </Form.Control.Feedback>
               </Form.Group>
 
               {/* Candidate Email */}
-               <Form.Group className="mb-3">
-                <Form.Label>Email<span className="text-danger">*</span></Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  Email<span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   ref={refs.candidate_email}
                   type="email"
@@ -266,41 +360,55 @@ const TrainingRegistration = () => {
                   isInvalid={!!errorMessages.candidate_email}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.candidate_email}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.candidate_email}
+                </Form.Control.Feedback>
               </Form.Group>
 
               {/* Candidate Phone */}
               <Form.Group className="mb-3">
-                <Form.Label>Phone<span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Phone<span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   type="text"
-                  name="candidate_phone"ref={refs.candidate_phone}
+                  name="candidate_phone"
+                  ref={refs.candidate_phone}
                   value={formData.candidate_phone}
                   onChange={handleChange}
                   placeholder="10-digit phone"
                   isInvalid={!!errorMessages.candidate_phone}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.candidate_phone}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.candidate_phone}
+                </Form.Control.Feedback>
               </Form.Group>
 
               {/* Date of Birth */}
               <Form.Group className="mb-3">
-                <Form.Label>Date of Birth<span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Date of Birth<span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   type="date"
                   name="Date_of_Birth"
                   value={formData.Date_of_Birth}
                   onChange={handleChange}
-                  isInvalid={!!errorMessages.Date_of_Birth} ref={refs.Date_of_Birth}
+                  isInvalid={!!errorMessages.Date_of_Birth}
+                  ref={refs.Date_of_Birth}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.Date_of_Birth}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.Date_of_Birth}
+                </Form.Control.Feedback>
               </Form.Group>
 
               {/* Gender */}
               <Form.Group className="mb-3">
-                <Form.Label>Gender<span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Gender<span className="text-danger">*</span>
+                </Form.Label>
                 <div className="d-flex gap-3">
                   <Form.Check
                     type="radio"
@@ -320,61 +428,85 @@ const TrainingRegistration = () => {
                     onChange={handleChange}
                   />
                 </div>
-                {errorMessages.Gender && <div className="text-danger">{errorMessages.Gender}</div>}
+                {errorMessages.Gender && (
+                  <div className="text-danger">{errorMessages.Gender}</div>
+                )}
               </Form.Group>
 
               {/* Password */}
-             <Form.Group className="mb-3">
-  <Form.Label>Password<span className="text-danger">*</span></Form.Label>
-  <InputGroup>
-    <Form.Control
-      type={showPassword ? "text" : "password"}
-      name="password"
-      value={formData.password} 
-      onChange={handleChange}
-      isInvalid={!!errorMessages.password}
-      required ref={refs.password}
-    />
-    <InputGroup.Text
-      onClick={() => setShowPassword(!showPassword)}
-      style={{ cursor: "pointer" }}
-    >
-      {showPassword ? <FaEyeSlash /> : <FaEye />}
-    </InputGroup.Text>
-    <Form.Control.Feedback type="invalid">{errorMessages.password}</Form.Control.Feedback>
-  </InputGroup>
-  {errorMessages.password && <div className="text-danger">{errorMessages.password}</div>}
-</Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  Password<span className="text-danger">*</span>
+                </Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    isInvalid={!!errorMessages.password}
+                    required
+                    ref={refs.password}
+                  />
+                  <InputGroup.Text
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </InputGroup.Text>
+                  <Form.Control.Feedback type="invalid">
+                    {errorMessages.password}
+                  </Form.Control.Feedback>
+                </InputGroup>
+                {errorMessages.password && (
+                  <div className="text-danger">{errorMessages.password}</div>
+                )}
+              </Form.Group>
 
-{/* Confirm Password field */}
-<Form.Group className="mb-3">
-  <Form.Label>Confirm Password<span className="text-danger">*</span></Form.Label>
-  <InputGroup>
-    <Form.Control
-      type={showConfirmPassword ? "text" : "password"}
-      name="confirm_password"
-      value={formData.confirm_password} ref={refs.confirm_password}
-      onChange={handleChange}
-      isInvalid={!!errorMessages.confirm_password}
-      required
-    />
-    <InputGroup.Text
-      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-      style={{ cursor: "pointer" }}
-    >
-      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-    </InputGroup.Text>
-    <Form.Control.Feedback type="invalid">{errorMessages.confirm_password}</Form.Control.Feedback>
-  </InputGroup>
-  {errorMessages.confirm_password && <div className="text-danger">{errorMessages.confirm_password}</div>}
-</Form.Group>
+              {/* Confirm Password field */}
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  Confirm Password<span className="text-danger">*</span>
+                </Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirm_password"
+                    value={formData.confirm_password}
+                    ref={refs.confirm_password}
+                    onChange={handleChange}
+                    isInvalid={!!errorMessages.confirm_password}
+                    required
+                  />
+                  <InputGroup.Text
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </InputGroup.Text>
+                  <Form.Control.Feedback type="invalid">
+                    {errorMessages.confirm_password}
+                  </Form.Control.Feedback>
+                </InputGroup>
+                {errorMessages.confirm_password && (
+                  <div className="text-danger">
+                    {errorMessages.confirm_password}
+                  </div>
+                )}
+              </Form.Group>
 
               {/* Photo */}
               <Form.Group className="mb-3">
-                <Form.Label>Upload Photo<span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Upload Photo<span className="text-danger">*</span>
+                </Form.Label>
                 {formData.photo && (
                   <img
-                    src={formData.photo instanceof File ? URL.createObjectURL(formData.photo) : formData.photo}
+                    src={
+                      formData.photo instanceof File
+                        ? URL.createObjectURL(formData.photo)
+                        : formData.photo
+                    }
                     alt="Preview"
                     width={100}
                     className="rounded-circle mb-2"
@@ -387,7 +519,9 @@ const TrainingRegistration = () => {
                   isInvalid={!!errorMessages.photo}
                   required
                 />
-                <Form.Control.Feedback type="invalid">{errorMessages.photo}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errorMessages.photo}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <div className="text-center">

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import RHSNav from "./RHSNav";
 import TrainingNavBar from "../../user/top-navbar/TrainingNavBar";
-import { Col } from "react-bootstrap";
+import { Button, Col } from "react-bootstrap";
 import { Row, Accordion, Card } from "react-bootstrap";
 import "../../../assets/css/RHSNav.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../../assets/css/Python.css";
+import { MdKeyboardBackspace } from "react-icons/md";
 const MYSql = () => {
+  const navigate = useNavigate();
   const [isRHSClosed, setIsRHSClosed] = useState(false);
 
   const toggleRHSNav = () => setIsRHSClosed(!isRHSClosed);
@@ -37,9 +39,21 @@ const MYSql = () => {
                       {/* Left Column (Accordion) */}
                <Col md={12} sm={12} lg={12} className="mb-4">
                           <Card>
+                             <div className="pay-now-register">
                             <h3 className="section-heading">
                               📚 MySQL Training Program Outline{" "}
+                              
                             </h3>
+                            <div className="pay-now-btn-dsbl">
+                                <button
+                                  className="btn btn-primary rounded-pill dash-board-btn px-4"
+                                  disabled
+                                 
+                                >
+                                  Pay Now
+                                </button>
+                                </div>
+                              </div>
                             <Accordion defaultActiveKey="0" flush alwaysOpen>
                               <Accordion.Item eventKey="0">
                                 <Accordion.Header>
@@ -279,13 +293,18 @@ const MYSql = () => {
                             </Accordion>
                           </Card>
                         </Col>
-
+<Col md={1} sm={12}>
+              <Button variant="" className="back-btn" onClick={() => navigate(-1)}>
+                <MdKeyboardBackspace /> Back
+              </Button>
+            </Col>
                       {/* Right Column (Registration) */}
                     </Row>
                   </div>
                 </div>
               </div>
             </div>
+             
           </Col>
           <Col lg={2} sm={2} md={12}>
             <RHSNav />

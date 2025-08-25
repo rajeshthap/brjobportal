@@ -462,25 +462,33 @@ button.nd-primary-btn.btn.btn-secondary {
 
 
 }
+
 .btn-register:hover {
-  background-color: #0056b3 !important;  /* Darker blue */
-  transform: scale(1.02);               /* Slight grow effect */
-  transition: all 0.2s ease-in-out;      /* Smooth animation */
+  background-color: #0056b3 !important;
+  /* Darker blue */
+  transform: scale(1.02);
+  /* Slight grow effect */
+  transition: all 0.2s ease-in-out;
+  /* Smooth animation */
 }
 
-.pagingnation-container{
+.pagingnation-container {
   display: flex;
   justify-content: space-between;
 }
-.edit-main-heading{
+
+.edit-main-heading {
   margin-top: 96px;
 }
-.img-ml{
+
+.img-ml {
   margin-left: var(--awc-space-200);
 }
-.spi-top{
-  margin-top: var(--awc-space-500);
+
+.spi-top {
+  margin-top: var(--awc-space-800) !important;
 }
+
 @media (min-width: 992px) {
   .mob-saved-job-btn {
     display: none !important;
@@ -498,9 +506,15 @@ button.nd-primary-btn.btn.btn-secondary {
     margin: 0px !important;
 
   }
-.post-job-mobile{
-  padding: var(--awc-space-400) !important;
-}
+
+  .edit-main-heading {
+    padding: var(--awc-space-200) !important;
+  }
+
+  .post-job-mobile {
+    padding: var(--awc-space-400) !important;
+  }
+
   .mob-desk-top-view {
     display: none !important;
   }
@@ -536,7 +550,8 @@ button.nd-primary-btn.btn.btn-secondary {
   .ad-banner {
     margin-top: var(--brjp-space-300);
   }
-  .mob-tbt-view h5{
+
+  .mob-tbt-view h5 {
     padding: var(--brjp-space-200);
   }
 
@@ -546,8 +561,9 @@ button.nd-primary-btn.btn.btn-secondary {
   .mobile-img {
     display: none;
   }
+
   .cdpo-lhs-nav {
     display: none !important;
-}
+  }
 
 }

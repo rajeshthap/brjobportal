@@ -270,17 +270,14 @@ const TrainingMySql = () => {
               <Card className="registration-card down-register">
                 <h4 className="text-center">📋 Registration</h4>
                 <p className="text-muted text-center">
-                  Enroll now to start your MySql journey!
+                  Enroll now to start your HTML/CSS/Bootstrap journey!
                 </p>
                 <div className="text-center mt-3">
-                  <Link
-            to="/TrainingRegistration"
-           
-          >
-            <button className="btn btn-primary rounded-pill px-4 mobile-register-now">
-              Register Now
-            </button>
-          </Link>
+                  <Link to="/TrainingRegistration">
+                    <button className="btn btn-primary rounded-pill px-4">
+                      Register Now
+                    </button>
+                  </Link>
                 </div>
               </Card>
             </Col>
